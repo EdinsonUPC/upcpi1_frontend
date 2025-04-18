@@ -225,8 +225,6 @@ EnhancedTable.propTypes = {
 export default function EnhancedTable({ data }) {
   const [rows, setRows] = React.useState([]);
 
-  console.log("products");
-  console.log(data);
   React.useEffect(() => {
     setRows(
       data.map((p) => {
@@ -242,22 +240,6 @@ export default function EnhancedTable({ data }) {
       })
     );
   }, [data]);
-
-  console.log("rows");
-  console.log(rows);
-
-  // console.log(
-  //   data.map((p) => {
-  //     return createData(
-  //       p.id_producto,
-  //       p.nombre,
-  //       p.precio_venta,
-  //       p.precio_compra,
-  //       p.margen,
-  //       p.id_tipo_producto
-  //     );
-  //   })
-  // );
 
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");

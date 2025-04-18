@@ -58,10 +58,6 @@ function getDaysInMonth(month, year) {
   const daysInMonth3 = date3.getDate();
   const daysInMonth4 = date4.getDate();
   const daysInMonth5 = date5.getDate();
-  // console.log(daysInMonth1);
-  // console.log(daysInMonth2);
-  // console.log(daysInMonth3);
-  // console.log(daysInMonth4);
   const days = [];
   days.push(`${monthName1} ${daysInMonth1}`);
   days.push(`${monthName2} ${daysInMonth2}`);
@@ -69,7 +65,6 @@ function getDaysInMonth(month, year) {
   days.push(`${monthName4} ${daysInMonth4}`);
   days.push(`${monthName5} ${daysInMonth5}`);
 
-  // console.log(days);
   return days;
 }
 
@@ -100,9 +95,6 @@ export default function DetailChart({ id_producto }) {
       const momemtHoyApi = moment(hoy)
         .set("month", monthSelect - 1)
         .set("date", 1);
-      // console.log("momemtHoyApi");
-      // console.log(momemtHoyApi.format("YYYY-MM-DD"));
-      // console.log(momemtHoyApi.add(1, "M").format("YYYY-MM-DD"));
       const { data } = await axios.post(
         "http://localhost:8000/api/ventas/filterQuantityByProdByPeriod",
         {
@@ -110,8 +102,6 @@ export default function DetailChart({ id_producto }) {
           Id_Producto: id_producto,
         }
       );
-      console.log("dataPrediccion");
-      console.log(data);
 
       const mesActual = momemtHoyApi.format("MM");
       const arrayGrafico = [
@@ -120,7 +110,6 @@ export default function DetailChart({ id_producto }) {
         mesActual - 1,
         parseInt(mesActual),
       ];
-      console.log(arrayGrafico);
       const nuevoArray = arrayGrafico.map((x) => {
         return data.prediccion.find((registro) => registro.Month === x)
           ? data.prediccion.find((registro) => registro.Month === x)
@@ -141,29 +130,22 @@ export default function DetailChart({ id_producto }) {
       );
 
       // const mesActual = momemtHoyApi.format("MM");
-      console.log("mesActual");
-      console.log(dataPrediccion);
       setPrediccionVenta(dataPrediccion);
       setHistorialVentas({ ...data, prediccion: nuevoArray });
     };
     apiFetch();
   }, [monthSelect]);
 
-  console.log(historialVentas);
-  console.log(prediccionVenta);
-
   const dataLinealGraphic = () => {
     const x = historialVentas.prediccion
       ? historialVentas.prediccion.map((mes) => mes.QuantitySold)
       : [];
 
-    console.log(x);
     const y = prediccionVenta.prediccion
       ? prediccionVenta.prediccion.map((nodo) => nodo.QuantitySoldPredict)
       : [];
     return x.concat(y);
   };
-  console.log(dataLinealGraphic());
   return (
     <Card variant="outlined" sx={{ width: "100%" }}>
       <CardContent>
@@ -185,7 +167,8 @@ export default function DetailChart({ id_producto }) {
             <Chip size="small" color="success" label="+35%" /> */}
           </Stack>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            Montos de ventas totales en los ultimos 4 meses
+            Montos de ventas totales en los ultimos 4 meses y prediccion del mes
+            siguiente
           </Typography>
           <TextField
             select
@@ -216,9 +199,7 @@ export default function DetailChart({ id_producto }) {
               scaleType: "point",
               data,
               tickInterval: (index, i) => {
-                // console.log(i);
                 return i + 1;
-                // return (i + 1) % 30 === 0;
               },
             },
           ]}

@@ -30,8 +30,6 @@ export default function ProductDetail() {
   const hoy = Date.now();
   const momemtHoy = moment(hoy);
   let params = useParams();
-  console.log("params");
-  console.log(params);
 
   useEffect(() => {
     const apiFetch = async () => {
@@ -39,44 +37,14 @@ export default function ProductDetail() {
         "http://localhost:8000/api/productos/list"
       );
 
-      // const { data } = await axios.post(
-      //   "http://localhost:8000/api/ventas/predictionQuantityByPeriodListProd",
-      //   {
-      //     date: momemtHoy.format("YYYY-MM-DD"),
-      //   }
-      // );
-      // const productosFormat = productosData.map((producto) => {
-      //   console.log({
-      //     ...producto,
-      //     prediccion: data.prediccion.find(
-      //       (x) => x.Id_Product === producto.id_producto
-      //     ),
-      //   });
-      //   return {
-      //     ...producto,
-      //     prediccion: data.prediccion.find(
-      //       (x) => x.Id_Product === producto.id_producto
-      //     ),
-      //   };
-      // });
-      // console.log("productosData");
-      // console.log(productosData);
-      // console.log(
-      //   productosData.find(
-      //     (product) => `${product.id_producto}` === params.productId
-      //   )
-      // );
       const productDetailData = productosData.find(
         (product) => `${product.id_producto}` === params.productId
       );
       setProduct(productDetailData);
-      // setPredicciones(data);
     };
     apiFetch();
   }, []);
 
-  console.log("product");
-  console.log(product);
   return (
     <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
       {/* cards */}

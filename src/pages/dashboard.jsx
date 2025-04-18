@@ -2,7 +2,7 @@ import Grid from "@mui/material/Grid2";
 import Box from "@mui/material/Box";
 // import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import ChartUserByCountry from "../dashboard/components/ChartUserByCountry";
+// import ChartUserByCountry from "../dashboard/components/ChartUserByCountry";
 // import CustomizedTreeView from "../dashboard/components/CustomizedTreeView";
 // import CustomizedDataGrid from "../dashboard/components/CustomizedDataGrid";
 // import HighlightedCard from "../dashboard/components/HighlightedCard";
@@ -71,8 +71,6 @@ export default function Dashboard() {
       ? historialVentas.prediccion.map((mes) => mes.TotalAmount)
       : [];
 
-    console.log(x);
-
     return x;
   };
 
@@ -84,10 +82,8 @@ export default function Dashboard() {
     const ultimo = array[array.length - 1]; // Último elemento
 
     if (penultimo < ultimo) {
-      console.log("El penúltimo elemento es menor que el último.");
       tendencia = 1;
     } else {
-      console.log("El penúltimo elemento NO es menor que el último.");
       tendencia = -1;
     }
   }
@@ -127,9 +123,9 @@ export default function Dashboard() {
         <Grid size={{ xs: 12, md: 9 }}>
           <SessionsChart />
         </Grid>
-        <Grid size={{ xs: 12, md: 3 }}>
+        {/* <Grid size={{ xs: 12, md: 3 }}>
           <ChartUserByCountry />
-        </Grid>
+        </Grid> */}
         {/* <Grid size={{ xs: 12, md: 6 }}>
         <PageViewsBarChart />
       </Grid> */}

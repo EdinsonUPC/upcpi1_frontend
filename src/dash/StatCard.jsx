@@ -50,7 +50,6 @@ function getDaysInMonth(month, year) {
   days.push(`${monthName2} ${daysInMonth2}`);
   days.push(`${monthName3} ${daysInMonth3}`);
   days.push(`${monthName4} ${daysInMonth4}`);
-  // console.log(days);
   return days;
 }
 

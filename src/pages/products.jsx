@@ -53,12 +53,6 @@ export default function Products() {
         }
       );
       const productosFormat = productosData.map((producto) => {
-        console.log({
-          ...producto,
-          prediccion: data.prediccion.find(
-            (x) => x.Id_Product === producto.id_producto
-          ),
-        });
         return {
           ...producto,
           prediccion: data.prediccion.find(
@@ -66,10 +60,7 @@ export default function Products() {
           ),
         };
       });
-      console.log("productosFormat");
-      console.log(productosFormat);
       setProducts(productosFormat);
-      // setPredicciones(data);
     };
     apiFetch();
   }, []);
