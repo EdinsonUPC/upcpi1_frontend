@@ -13,6 +13,7 @@ import StatCard from "../dash/StatCard";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import axios from "axios";
+import SessionsChartQuantity from "../dash/SessionsChartquantity";
 moment().format();
 moment().locale("es");
 
@@ -67,19 +68,19 @@ export default function Dashboard() {
   }, []);
 
   const dataLinealGraphic = () => {
-    const x = historialVentas.prediccion
-      ? historialVentas.prediccion.map((mes) => mes.TotalAmount)
+    const x = historialVentas.data
+      ? historialVentas.data.map((mes) => mes.TotalAmount)
       : [];
 
     return x;
   };
 
-  const array = dataLinealGraphic();
+  const arrayDataLineal = dataLinealGraphic();
   let tendencia = 0;
   // Verificar si el array tiene al menos dos elementos
-  if (array.length >= 2) {
-    const penultimo = array[array.length - 2]; // Penúltimo elemento
-    const ultimo = array[array.length - 1]; // Último elemento
+  if (arrayDataLineal.length >= 2) {
+    const penultimo = arrayDataLineal[arrayDataLineal.length - 2]; // Penúltimo elemento
+    const ultimo = arrayDataLineal[arrayDataLineal.length - 1]; // Último elemento
 
     if (penultimo < ultimo) {
       tendencia = 1;
@@ -88,13 +89,18 @@ export default function Dashboard() {
     }
   }
 
+  console.log("array");
+  console.log(arrayDataLineal);
+
   const data = [
     {
       title: "Monto de ventas de este mes",
-      value: array.length ? `${array[array.length - 1]}` : "0",
+      value: arrayDataLineal.length
+        ? `${arrayDataLineal[arrayDataLineal.length - 1]}`
+        : "0",
       interval: "Ultimos 3 meses",
       trend: tendencia > 0 ? "up" : "down",
-      data: array,
+      data: arrayDataLineal,
       month: momemtHoy.format("MM"),
       year: momemtHoy.format("YYYY"),
     },
@@ -112,38 +118,19 @@ export default function Dashboard() {
         columns={12}
         sx={{ mb: (theme) => theme.spacing(2) }}
       >
-        {data.map((card, index) => (
+        {/* {data.map((card, index) => (
           <Grid key={index} size={{ xs: 12, sm: 6, lg: 3 }}>
             <StatCard {...card} />
           </Grid>
-        ))}
-        {/* <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-        <HighlightedCard />
-      </Grid> */}
+        ))} */}
+        <Grid size={{ xs: 12, md: 9 }}>
+          <SessionsChartQuantity />
+        </Grid>
         <Grid size={{ xs: 12, md: 9 }}>
           <SessionsChart />
         </Grid>
-        {/* <Grid size={{ xs: 12, md: 3 }}>
-          <ChartUserByCountry />
-        </Grid> */}
-        {/* <Grid size={{ xs: 12, md: 6 }}>
-        <PageViewsBarChart />
-      </Grid> */}
       </Grid>
-      {/* <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-      Details
-    </Typography>
-    <Grid container spacing={2} columns={12}>
-      <Grid size={{ xs: 12, lg: 9 }}>
-        <CustomizedDataGrid />
-      </Grid>
-      <Grid size={{ xs: 12, lg: 3 }}>
-        <Stack gap={2} direction={{ xs: "column", sm: "row", lg: "column" }}>
-          <CustomizedTreeView />
-          <ChartUserByCountry />
-        </Stack>
-      </Grid>
-    </Grid> */}
+
       <Copyright sx={{ my: 4 }} />
     </Box>
   );

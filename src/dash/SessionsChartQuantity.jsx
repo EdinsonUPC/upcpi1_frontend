@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Chip from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import { LineChart } from "@mui/x-charts/LineChart";
@@ -28,9 +27,6 @@ AreaGradient.propTypes = {
   color: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
 };
-DetailChart.propTypes = {
-  id_producto: PropTypes.string.isRequired,
-};
 
 function getDaysInMonth(month, year) {
   const days = [];
@@ -55,17 +51,15 @@ function getDaysInMonth(month, year) {
 
   return days;
 }
-
-export default function DetailChart({ id_producto }) {
+export default function SessionsChartQuantity() {
   const theme = useTheme();
   const hoy = Date.now();
   const momemtHoy = moment(hoy).format("MM");
+  const momemtYear = moment(hoy).format("YYYY");
   const [monthSelect, setMonthSelect] = useState(momemtHoy);
+  const [yearSelect, setYearSelect] = useState(momemtYear);
 
-  const data = getDaysInMonth(
-    parseInt(monthSelect),
-    parseInt(moment(hoy).format("YYYY"))
-  );
+  const data = getDaysInMonth(parseInt(monthSelect), yearSelect);
 
   const colorPalette = [
     theme.palette.primary.light,
@@ -73,59 +67,40 @@ export default function DetailChart({ id_producto }) {
     theme.palette.primary.dark,
   ];
 
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [historialVentas, setHistorialVentas] = useState({});
-  const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);
   const [prediccionVenta, setPrediccionVenta] = useState({});
 
   useEffect(() => {
     const apiFetch = async () => {
       const momemtHoyApi = moment(hoy)
+        .set("year", yearSelect)
         .set("month", monthSelect - 1)
-        .set("date", 1);
+        .set("date", 29);
       const { data } = await axios.post(
-        "http://localhost:8000/api/ventas/filterQuantityByProdByPeriod",
+        "http://localhost:8000/api/ventas/filterQuantityByPeriod",
         {
           date: momemtHoyApi.format("YYYY-MM-DD"),
-          Id_Producto: id_producto,
         }
       );
-
-      // const mesActual = momemtHoyApi.format("MM");
-      // const arrayGrafico = [
-      //   mesActual - 3,
-      //   mesActual - 2,
-      //   mesActual - 1,
-      //   parseInt(mesActual),
-      // ];
-      // const nuevoArray = arrayGrafico.map((x) => {
-      //   return data.prediccion.find((registro) => registro.Month === x)
-      //     ? data.prediccion.find((registro) => registro.Month === x)
-      //     : {
-      //         Id_Product: id_producto,
-      //         Year: momemtHoyApi.format("YYYY"),
-      //         Month: x,
-      //         QuantitySold: 0,
-      //         TotalAmount: 0,
-      //       };
-      // });
       const { data: dataPrediccion } = await axios.post(
-        "http://localhost:8000/api/ventas/predictionQuantityByProdByPeriod",
+        "http://localhost:8000/api/ventas/predictionQuantityByPeriod",
         {
           date: momemtHoyApi.add(1, "M").format("YYYY-MM-DD"),
-          Id_Producto: parseInt(id_producto),
         }
       );
 
-      // const mesActual = momemtHoyApi.format("MM");
+      console.log("data");
+      console.log(data);
+      console.log("dataPrediccion");
+      console.log(dataPrediccion);
       setPrediccionVenta(dataPrediccion);
       setHistorialVentas(data);
     };
     apiFetch();
-  }, [monthSelect]);
+  }, [monthSelect, yearSelect]);
 
-  console.log(historialVentas);
-  console.log(prediccionVenta);
   const dataLinealGraphic = () => {
     const x = historialVentas.data
       ? historialVentas.data.map((mes) => mes.QuantitySold)
@@ -136,6 +111,8 @@ export default function DetailChart({ id_producto }) {
       : [];
     return x.concat(y);
   };
+
+  console.log(dataLinealGraphic());
   return (
     <Card variant="outlined" sx={{ width: "100%" }}>
       <CardContent>
@@ -150,36 +127,60 @@ export default function DetailChart({ id_producto }) {
               alignItems: "center",
               gap: 1,
             }}
-          >
-            {/* <Typography variant="h4" component="p">
-              13,277
-              </Typography>
-            <Chip size="small" color="success" label="+35%" /> */}
-          </Stack>
+          ></Stack>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
             Montos de ventas totales en los ultimos 12 meses y prediccion del
             mes siguiente
           </Typography>
-          <TextField
-            select
-            sx={{ minWidth: 150 }}
-            label="Mes seleccionado"
-            value={monthSelect}
-            onChange={(event) => setMonthSelect(event.target.value)}
+          <Stack
+            direction="row"
+            sx={{
+              alignContent: { xs: "center", sm: "flex-start" },
+              alignItems: "center",
+              gap: 1,
+            }}
           >
-            <MenuItem value="01">Enero</MenuItem>
-            <MenuItem value="02">Febrero</MenuItem>
-            <MenuItem value="03">Marzo</MenuItem>
-            <MenuItem value="04">Abril</MenuItem>
-            <MenuItem value="05">Mayo</MenuItem>
-            <MenuItem value="06">Junio</MenuItem>
-            <MenuItem value="07">Julio</MenuItem>
-            <MenuItem value="08">Agosto</MenuItem>
-            <MenuItem value="09">Septiembre</MenuItem>
-            <MenuItem value="10">Octubre</MenuItem>
-            <MenuItem value="11">Noviembre</MenuItem>
-            <MenuItem value="12">Diciembre</MenuItem>
-          </TextField>
+            <TextField
+              select
+              sx={{ minWidth: 150 }}
+              label="Mes seleccionado"
+              value={monthSelect}
+              onChange={(event) => setMonthSelect(event.target.value)}
+            >
+              <MenuItem value="01">Enero</MenuItem>
+              <MenuItem value="02">Febrero</MenuItem>
+              <MenuItem value="03">Marzo</MenuItem>
+              <MenuItem value="04">Abril</MenuItem>
+              <MenuItem value="05">Mayo</MenuItem>
+              <MenuItem value="06">Junio</MenuItem>
+              <MenuItem value="07">Julio</MenuItem>
+              <MenuItem value="08">Agosto</MenuItem>
+              <MenuItem value="09">Septiembre</MenuItem>
+              <MenuItem value="10">Octubre</MenuItem>
+              <MenuItem value="11">Noviembre</MenuItem>
+              <MenuItem value="12">Diciembre</MenuItem>
+            </TextField>
+            <TextField
+              select
+              sx={{ minWidth: 150 }}
+              label="Año"
+              value={yearSelect}
+              onChange={(event) => setYearSelect(event.target.value)}
+            >
+              <MenuItem value="2016">2016</MenuItem>
+              <MenuItem value="2017">2017</MenuItem>
+              <MenuItem value="2018">2018</MenuItem>
+              <MenuItem value="2019">2019</MenuItem>
+              <MenuItem value="2020">2020</MenuItem>
+              <MenuItem value="2021">2021</MenuItem>
+              <MenuItem value="2022">2022</MenuItem>
+              <MenuItem value="2023">2023</MenuItem>
+              <MenuItem value="2024">2024</MenuItem>
+              <MenuItem value="2025">2025</MenuItem>
+              <MenuItem value="2026">2026</MenuItem>
+              <MenuItem value="2027">2027</MenuItem>
+            </TextField>
+          </Stack>
         </Stack>
 
         <LineChart
@@ -190,6 +191,7 @@ export default function DetailChart({ id_producto }) {
               data,
               tickInterval: (index, i) => {
                 return i + 1;
+                // return (i + 1) % 30 === 0;
               },
             },
           ]}
@@ -204,30 +206,6 @@ export default function DetailChart({ id_producto }) {
               stackOrder: "ascending",
               data: dataLinealGraphic(),
             },
-            // {
-            //   id: "referral",
-            //   label: "Referral",
-            //   showMark: false,
-            //   curve: "linear",
-            //   stack: "total",
-            //   area: true,
-            //   stackOrder: "ascending",
-            //   data: [500, 900, 700, 1400],
-            // },
-            // {
-            //   id: 'organic',
-            //   label: 'Organic',
-            //   showMark: false,
-            //   curve: 'linear',
-            //   stack: 'total',
-            //   stackOrder: 'ascending',
-            //   data: [
-            //     1000, 1500, 1200, 1700, 1300, 2000, 2400, 2200, 2600, 2800, 2500,
-            //     3000, 3400, 3700, 3200, 3900, 4100, 3500, 4300, 4500, 4000, 4700,
-            //     5000, 5200, 4800, 5400, 5600, 5900, 6100, 6300,
-            //   ],
-            //   area: true,
-            // },
           ]}
           height={250}
           margin={{ left: 80, right: 20, top: 20, bottom: 20 }}

@@ -1,12 +1,7 @@
 import LoginForm from "../login/loginForm";
 
 function Login() {
-  const handleLogin = ({ email, password, remember }) => {
-    // Tu lógica de autenticación aquí
-    console.log(email, password, remember);
-  };
-
-  return <LoginForm onLogin={handleLogin} />;
+  return <LoginForm />;
 }
 
 export default Login;

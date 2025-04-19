@@ -9,47 +9,29 @@ import Typography from "@mui/material/Typography";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
 import { areaElementClasses } from "@mui/x-charts/LineChart";
 
-// function getDaysInMonth(month, year) {
-//   const date = new Date(year, month, 0);
-//   const monthName = date.toLocaleDateString("es-ES", {
-//     month: "short",
-//   });
-//   const daysInMonth = date.getDate();
-//   const days = [];
-//   let i = 1;
-//   while (days.length < daysInMonth) {
-//     days.push(`${monthName} ${i}`);
-//     i += 1;
-//   }
-//   return days;
-// }
-
 function getDaysInMonth(month, year) {
-  const date1 = new Date(year, month - 3, 0);
-  const date2 = new Date(year, month - 2, 0);
-  const date3 = new Date(year, month - 1, 0);
-  const date4 = new Date(year, month, 0);
-  const monthName1 = date1.toLocaleDateString("es-ES", {
-    month: "short",
-  });
-  const monthName2 = date2.toLocaleDateString("es-ES", {
-    month: "short",
-  });
-  const monthName3 = date3.toLocaleDateString("es-ES", {
-    month: "short",
-  });
-  const monthName4 = date4.toLocaleDateString("es-ES", {
-    month: "short",
-  });
-  const daysInMonth1 = date1.getDate();
-  const daysInMonth2 = date2.getDate();
-  const daysInMonth3 = date3.getDate();
-  const daysInMonth4 = date4.getDate();
+  console.log(month);
+  console.log(year);
   const days = [];
-  days.push(`${monthName1} ${daysInMonth1}`);
-  days.push(`${monthName2} ${daysInMonth2}`);
-  days.push(`${monthName3} ${daysInMonth3}`);
-  days.push(`${monthName4} ${daysInMonth4}`);
+
+  for (let offset = -11; offset <= 1; offset++) {
+    let newMonth = month + offset;
+    let newYear = year;
+
+    // Ajustar el año si el mes se sale del rango
+    if (newMonth < 1) {
+      newMonth += 12;
+      newYear -= 1;
+    } else if (newMonth > 12) {
+      newMonth -= 12;
+      newYear += 1;
+    }
+
+    const date = new Date(newYear, newMonth, 0);
+    const monthName = date.toLocaleDateString("es-ES", { month: "short" });
+    days.push(`${monthName} ${date.getDate()} ${newYear}`);
+  }
+
   return days;
 }
 

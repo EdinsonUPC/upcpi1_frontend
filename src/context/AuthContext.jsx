@@ -27,12 +27,7 @@ export const AuthProvider = ({ children }) => {
         };
       }
       const userData = {
-        username: data.username,
-        empresa: data.empresa,
-        idCaja: data.idCaja,
-        idPersonal: data.idPersonal,
-        tokenjwt: data.tokenjwt,
-        personalParams: data.personalParams,
+        ...data.credenciales,
       };
 
       setUser(userData);

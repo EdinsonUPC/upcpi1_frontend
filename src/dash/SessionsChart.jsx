@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Chip from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import { LineChart } from "@mui/x-charts/LineChart";
@@ -30,48 +29,37 @@ AreaGradient.propTypes = {
 };
 
 function getDaysInMonth(month, year) {
-  const date1 = new Date(year, month - 3, 0);
-  const date2 = new Date(year, month - 2, 0);
-  const date3 = new Date(year, month - 1, 0);
-  const date4 = new Date(year, month, 0);
-  const date5 = new Date(year, month + 1, 0);
-  const monthName1 = date1.toLocaleDateString("es-ES", {
-    month: "short",
-  });
-  const monthName2 = date2.toLocaleDateString("es-ES", {
-    month: "short",
-  });
-  const monthName3 = date3.toLocaleDateString("es-ES", {
-    month: "short",
-  });
-  const monthName4 = date4.toLocaleDateString("es-ES", {
-    month: "short",
-  });
-  const monthName5 = date5.toLocaleDateString("es-ES", {
-    month: "short",
-  });
-  const daysInMonth1 = date1.getDate();
-  const daysInMonth2 = date2.getDate();
-  const daysInMonth3 = date3.getDate();
-  const daysInMonth4 = date4.getDate();
-  const daysInMonth5 = date5.getDate();
   const days = [];
-  days.push(`${monthName1} ${daysInMonth1}`);
-  days.push(`${monthName2} ${daysInMonth2}`);
-  days.push(`${monthName3} ${daysInMonth3}`);
-  days.push(`${monthName4} ${daysInMonth4}`);
-  days.push(`${monthName5} ${daysInMonth5}`);
+
+  for (let offset = -11; offset <= 1; offset++) {
+    let newMonth = month + offset;
+    let newYear = year;
+
+    // Ajustar el año si el mes se sale del rango
+    if (newMonth < 1) {
+      newMonth += 12;
+      newYear -= 1;
+    } else if (newMonth > 12) {
+      newMonth -= 12;
+      newYear += 1;
+    }
+
+    const date = new Date(newYear, newMonth, 0);
+    const monthName = date.toLocaleDateString("es-ES", { month: "short" });
+    days.push(`${monthName} ${date.getDate()} ${newYear}`);
+  }
 
   return days;
 }
-
 export default function SessionsChart() {
   const theme = useTheme();
   const hoy = Date.now();
   const momemtHoy = moment(hoy).format("MM");
+  const momemtYear = moment(hoy).format("YYYY");
   const [monthSelect, setMonthSelect] = useState(momemtHoy);
+  const [yearSelect, setYearSelect] = useState(momemtYear);
 
-  const data = getDaysInMonth(parseInt(monthSelect), 2024);
+  const data = getDaysInMonth(parseInt(monthSelect), yearSelect);
 
   const colorPalette = [
     theme.palette.primary.light,
@@ -79,16 +67,17 @@ export default function SessionsChart() {
     theme.palette.primary.dark,
   ];
 
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [historialVentas, setHistorialVentas] = useState({});
-  const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);
   const [prediccionVenta, setPrediccionVenta] = useState({});
 
   useEffect(() => {
     const apiFetch = async () => {
       const momemtHoyApi = moment(hoy)
+        .set("year", yearSelect)
         .set("month", monthSelect - 1)
-        .set("date", 1);
+        .set("date", 29);
       const { data } = await axios.post(
         "http://localhost:8000/api/ventas/filterQuantityByPeriod",
         {
@@ -101,15 +90,20 @@ export default function SessionsChart() {
           date: momemtHoyApi.add(1, "M").format("YYYY-MM-DD"),
         }
       );
+
+      console.log("data");
+      console.log(data);
+      console.log("dataPrediccion");
+      console.log(dataPrediccion);
       setPrediccionVenta(dataPrediccion);
       setHistorialVentas(data);
     };
     apiFetch();
-  }, [monthSelect]);
+  }, [monthSelect, yearSelect]);
 
   const dataLinealGraphic = () => {
-    const x = historialVentas.prediccion
-      ? historialVentas.prediccion.map((mes) => mes.TotalAmount)
+    const x = historialVentas.data
+      ? historialVentas.data.map((mes) => mes.TotalAmount)
       : [];
 
     const y = prediccionVenta.prediccion
@@ -117,6 +111,8 @@ export default function SessionsChart() {
       : [];
     return x.concat(y);
   };
+
+  console.log(dataLinealGraphic());
   return (
     <Card variant="outlined" sx={{ width: "100%" }}>
       <CardContent>
@@ -131,35 +127,60 @@ export default function SessionsChart() {
               alignItems: "center",
               gap: 1,
             }}
-          >
-            {/* <Typography variant="h4" component="p">
-              13,277
-              </Typography>
-            <Chip size="small" color="success" label="+35%" /> */}
-          </Stack>
+          ></Stack>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            Montos de ventas totales en los ultimos 4 meses y prediccion del mes siguiente
+            Montos de ventas totales en los ultimos 12 meses y prediccion del mes
+            siguiente
           </Typography>
-          <TextField
-            select
-            sx={{ minWidth: 150 }}
-            label="Mes seleccionado"
-            value={monthSelect}
-            onChange={(event) => setMonthSelect(event.target.value)}
+          <Stack
+            direction="row"
+            sx={{
+              alignContent: { xs: "center", sm: "flex-start" },
+              alignItems: "center",
+              gap: 1,
+            }}
           >
-            <MenuItem value="01">Enero</MenuItem>
-            <MenuItem value="02">Febrero</MenuItem>
-            <MenuItem value="03">Marzo</MenuItem>
-            <MenuItem value="04">Abril</MenuItem>
-            <MenuItem value="05">Mayo</MenuItem>
-            <MenuItem value="06">Junio</MenuItem>
-            <MenuItem value="07">Julio</MenuItem>
-            <MenuItem value="08">Agosto</MenuItem>
-            <MenuItem value="09">Septiembre</MenuItem>
-            <MenuItem value="10">Octubre</MenuItem>
-            <MenuItem value="11">Noviembre</MenuItem>
-            <MenuItem value="12">Diciembre</MenuItem>
-          </TextField>
+            <TextField
+              select
+              sx={{ minWidth: 150 }}
+              label="Mes seleccionado"
+              value={monthSelect}
+              onChange={(event) => setMonthSelect(event.target.value)}
+            >
+              <MenuItem value="01">Enero</MenuItem>
+              <MenuItem value="02">Febrero</MenuItem>
+              <MenuItem value="03">Marzo</MenuItem>
+              <MenuItem value="04">Abril</MenuItem>
+              <MenuItem value="05">Mayo</MenuItem>
+              <MenuItem value="06">Junio</MenuItem>
+              <MenuItem value="07">Julio</MenuItem>
+              <MenuItem value="08">Agosto</MenuItem>
+              <MenuItem value="09">Septiembre</MenuItem>
+              <MenuItem value="10">Octubre</MenuItem>
+              <MenuItem value="11">Noviembre</MenuItem>
+              <MenuItem value="12">Diciembre</MenuItem>
+            </TextField>
+            <TextField
+              select
+              sx={{ minWidth: 150 }}
+              label="Año"
+              value={yearSelect}
+              onChange={(event) => setYearSelect(event.target.value)}
+            >
+              <MenuItem value="2016">2016</MenuItem>
+              <MenuItem value="2017">2017</MenuItem>
+              <MenuItem value="2018">2018</MenuItem>
+              <MenuItem value="2019">2019</MenuItem>
+              <MenuItem value="2020">2020</MenuItem>
+              <MenuItem value="2021">2021</MenuItem>
+              <MenuItem value="2022">2022</MenuItem>
+              <MenuItem value="2023">2023</MenuItem>
+              <MenuItem value="2024">2024</MenuItem>
+              <MenuItem value="2025">2025</MenuItem>
+              <MenuItem value="2026">2026</MenuItem>
+              <MenuItem value="2027">2027</MenuItem>
+            </TextField>
+          </Stack>
         </Stack>
 
         <LineChart
@@ -185,30 +206,6 @@ export default function SessionsChart() {
               stackOrder: "ascending",
               data: dataLinealGraphic(),
             },
-            // {
-            //   id: "referral",
-            //   label: "Referral",
-            //   showMark: false,
-            //   curve: "linear",
-            //   stack: "total",
-            //   area: true,
-            //   stackOrder: "ascending",
-            //   data: [500, 900, 700, 1400],
-            // },
-            // {
-            //   id: 'organic',
-            //   label: 'Organic',
-            //   showMark: false,
-            //   curve: 'linear',
-            //   stack: 'total',
-            //   stackOrder: 'ascending',
-            //   data: [
-            //     1000, 1500, 1200, 1700, 1300, 2000, 2400, 2200, 2600, 2800, 2500,
-            //     3000, 3400, 3700, 3200, 3900, 4100, 3500, 4300, 4500, 4000, 4700,
-            //     5000, 5200, 4800, 5400, 5600, 5900, 6100, 6300,
-            //   ],
-            //   area: true,
-            // },
           ]}
           height={250}
           margin={{ left: 80, right: 20, top: 20, bottom: 20 }}

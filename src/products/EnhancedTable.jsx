@@ -22,6 +22,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { useNavigate } from "react-router-dom";
+import { Bolt } from "@mui/icons-material";
 
 function createData(
   id,
@@ -94,7 +95,7 @@ const headCells = [
     id: "prediccion",
     numeric: true,
     disablePadding: false,
-    label: "Prediccion(Mes)",
+    label: "Prediccion(Prox. Mes)",
   },
 ];
 
@@ -265,7 +266,7 @@ export default function EnhancedTable({ data }) {
   let navigate = useNavigate();
 
   const handleClick = (event, id) => {
-    navigate(`/product/${id}`);
+    navigate(`/products/${id}`);
 
     // const selectedIndex = selected.indexOf(id);
     // let newSelected = [];
@@ -357,7 +358,9 @@ export default function EnhancedTable({ data }) {
                     <TableCell align="right">{row.precioCompra}</TableCell>
                     <TableCell align="right">{row.margen}</TableCell>
                     <TableCell align="right">{row.tipoProducto}</TableCell>
-                    <TableCell align="right">{row.prediccion}</TableCell>
+                    <TableCell align="center">
+                      <b>{row.prediccion}</b>
+                    </TableCell>
                   </TableRow>
                 );
               })}
