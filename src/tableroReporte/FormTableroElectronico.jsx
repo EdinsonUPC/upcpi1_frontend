@@ -40,22 +40,15 @@ import repositoryVentasInstance from "../repositorys/ventasRepository.js";
 const FormTableroElectronico = () => {
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  const [isDevolucion, setIsDevolucion] = useState(false);
   const [venta, setVenta] = useState(dtoVenta());
   const [selectedTipo, setSelectedTipo] = useState("venta");
   const [message, setMessage] = useState(null);
   const [alertVariant, setAlertVariant] = useState("success");
   const [showSensitiveData, setShowSensitiveData] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
 
   const [isClienteEventual, setIsClienteEventual] = useState(false);
   const [fecha, setFecha] = useState("");
   const [idPesador, setIdPesador] = useState("");
-
-  // Actualiza el refreshKey para forzar un refresco
-  const refreshKeyUpdated = () => {
-    setRefreshKey((prev) => prev + 1);
-  };
 
   // Inicializar estado local desde Redux al cargar el componente
   useEffect(() => {
@@ -101,7 +94,7 @@ const FormTableroElectronico = () => {
   };
 
   // Calcular totales de la venta
-  const calculateTotals = () => {
+  const calcularTotales = () => {
     const totalPesoBruto = venta.ListaLineaVenta.reduce(
       (sum, item) => sum + (item.PesoBruto || 0),
       0
@@ -111,24 +104,30 @@ const FormTableroElectronico = () => {
       0
     );
     const totalPesoNeto = totalPesoBruto - totalPesoTara;
-    const monto = totalPesoNeto * (venta.Precio || 0);
+    const montoSubTotal = totalPesoNeto * (venta.Precio || 0);
+    const montoIgv = (montoSubTotal || 0) * 0.18;
+    const montoTotal = montoSubTotal + montoIgv;
 
     return {
       totalPesoBruto,
       totalPesoTara,
       totalPesoNeto,
-      monto,
+      montoSubTotal,
+      montoIgv,
+      montoTotal,
     };
   };
 
-  const { totalPesoBruto, totalPesoTara, totalPesoNeto, monto } =
-    calculateTotals();
+  // const { totalPesoBruto, totalPesoTara, totalPesoNeto, monto } =
+  //   calcularTotales();
+
+  const [totales, setTotales] = useState(calcularTotales());
+
+  useEffect(() => {
+    setTotales(calcularTotales());
+  }, [venta.ListaLineaVenta]);
 
   // Manejar cambio de tipo de transacción (radio buttons)
-  const handleRadioChange = (value) => {
-    setSelectedTipo(value);
-    setVenta({ ...venta, tipoTransaccion: value });
-  };
 
   const handleReset = () => {
     console.log("reseteando formulario");
@@ -156,9 +155,7 @@ const FormTableroElectronico = () => {
     });
 
     //setVenta({ ...venta, ListaLineaVenta: [] });
-    setIsDevolucion(false);
     setSelectedTipo("venta");
-    refreshKeyUpdated(); // Cambia el valor para disparar el efecto
     setTimeout(() => setMessage(null), 5000);
   };
 
@@ -170,7 +167,7 @@ const FormTableroElectronico = () => {
       return;
     }
 
-    if (totalPesoNeto <= 0) {
+    if (totales.totalPesoNeto <= 0) {
       setAlertVariant("danger");
       setMessage("El total neto debe ser mayor a 0.");
       return;
@@ -193,6 +190,17 @@ const FormTableroElectronico = () => {
       const updatedVenta = {
         ...venta,
         fecha: venta.fecha,
+        IdEmpresa: 1,
+        MontoSubTotal: totales.montoSubTotal,
+        MontoIGV: totales.montoIgv,
+        MontoTotal: totales.montoTotal,
+        TotalPesoBruto: totales.totalPesoBruto,
+        TotalPesoTara: totales.totalPesoTara,
+        TotalPesoNeto: totales.totalPesoNeto,
+        // TotalJabas:
+        // TotalUnidades:,
+        // TotalAmortizacion:TotalAmortizacion,
+        // TotalSaldo:TotalSaldo,
       };
 
       const response = await repositoryVentasInstance.createVenta(updatedVenta);
@@ -354,39 +362,13 @@ const FormTableroElectronico = () => {
                   }
                 />
               </Box>
-              <Box
-                width={{ xs: "100%", md: "40%" }}
-                display="flex"
-                alignItems="center"
-              >
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={isClienteEventual}
-                      onChange={(e) => toggleClienteEventual(e.target.checked)}
-                    />
-                  }
-                  label={isClienteEventual ? "Cliente Eventual" : "Cliente"}
-                />
-              </Box>
             </Stack>
 
             <Box>
-              {isClienteEventual ? (
-                <TextField
-                  fullWidth
-                  placeholder="Ingrese el nombre del cliente eventual"
-                  value={venta.ClienteEventual}
-                  onChange={(e) =>
-                    setVenta({ ...venta, ClienteEventual: e.target.value })
-                  }
-                />
-              ) : (
-                <DdownMultiSearchClient
-                  multiple={false}
-                  onChange={(value) => setVenta({ ...venta, IdCliente: value })}
-                />
-              )}
+              <DdownMultiSearchClient
+                multiple={false}
+                onChange={(value) => setVenta({ ...venta, IdCliente: value })}
+              />
             </Box>
 
             {/* Datos sensibles */}
@@ -449,60 +431,77 @@ const FormTableroElectronico = () => {
           <Typography variant="h6">Totales</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Stack spacing={2}>
-            {/* Primera fila */}
-            <Stack
-              direction={{ xs: "column", md: "row" }}
-              spacing={2}
-              alignItems="center"
-            >
-              <Typography sx={{ width: { md: "16.66%" } }}>
-                Total Peso Bruto:
-              </Typography>
+          <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+            <Box flex={1}>
+              <Typography>Total Peso Bruto:</Typography>
               <TextField
                 fullWidth
                 size="small"
                 variant="outlined"
-                value={totalPesoBruto.toFixed(2)}
-                InputProps={{ readOnly: true }}
+                value={totales.totalPesoBruto.toFixed(2)}
+                readOnly={true}
               />
-              <Typography sx={{ width: { md: "16.66%" } }}>
-                Total Peso Tara:
-              </Typography>
+            </Box>
+            <Box flex={1}>
+              <Typography>Total Peso Tara:</Typography>
               <TextField
                 fullWidth
                 size="small"
                 variant="outlined"
-                value={totalPesoTara.toFixed(2)}
-                InputProps={{ readOnly: true }}
+                value={totales.totalPesoTara.toFixed(2)}
+                readOnly={true}
               />
-            </Stack>
+            </Box>
+          </Stack>
 
-            {/* Segunda fila */}
-            <Stack
-              direction={{ xs: "column", md: "row" }}
-              spacing={2}
-              alignItems="center"
-            >
-              <Typography sx={{ width: { md: "16.66%" } }}>
-                Total Peso Neto:
-              </Typography>
+          {/* Segunda fila */}
+
+          <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+            <Box flex={1}>
+              <Typography>Total Peso Neto:</Typography>
               <TextField
                 fullWidth
                 size="small"
                 variant="outlined"
-                value={totalPesoNeto.toFixed(2)}
-                InputProps={{ readOnly: true }}
+                value={totales.totalPesoNeto.toFixed(2)}
+                readOnly={true}
               />
-              <Typography sx={{ width: { md: "16.66%" } }}>Monto:</Typography>
+            </Box>
+            <Box flex={1}>
+              <Typography>Monto Subtotal:</Typography>
               <TextField
                 fullWidth
                 size="small"
                 variant="outlined"
-                value={monto.toFixed(2)}
-                InputProps={{ readOnly: true }}
+                value={totales.montoSubTotal.toFixed(2)}
+                readOnly={true}
               />
-            </Stack>
+            </Box>
+          </Stack>
+
+          {/* Tercera fila */}
+
+          <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+            <Box flex={1}>
+              <Typography>Monto Igv:</Typography>
+              <TextField
+                fullWidth
+                size="small"
+                variant="outlined"
+                value={totales.montoIgv.toFixed(2)}
+                readOnly={true}
+              />
+            </Box>
+            <Box flex={1}>
+              <Typography>Monto Total:</Typography>
+              <TextField
+                fullWidth
+                size="small"
+                variant="outlined"
+                value={totales.montoTotal.toFixed(2)}
+                readOnly={true}
+              />
+            </Box>
           </Stack>
         </AccordionDetails>
       </Accordion>

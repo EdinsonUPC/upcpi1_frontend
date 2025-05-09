@@ -117,7 +117,7 @@ export default function SessionsChartQuantity() {
     <Card variant="outlined" sx={{ width: "100%" }}>
       <CardContent>
         <Typography component="h2" variant="subtitle2" gutterBottom>
-          Montos de venta
+          Cantidades vendidas(Kg)
         </Typography>
         <Stack sx={{ justifyContent: "space-between", gap: 1 }}>
           <Stack
@@ -129,8 +129,8 @@ export default function SessionsChartQuantity() {
             }}
           ></Stack>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            Montos de ventas totales en los ultimos 12 meses y prediccion del
-            mes siguiente
+            Cantidad vendida(Kg) en los ultimos 12 meses y prediccion del mes
+            siguiente
           </Typography>
           <Stack
             direction="row"

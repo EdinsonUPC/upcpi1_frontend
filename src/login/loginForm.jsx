@@ -64,8 +64,8 @@ const LoginForm = () => {
               label="Selecciona tu empresa"
               onChange={(e) => setCompany(e.target.value)}
             >
-              <MenuItem value="opcion1">Opción 1</MenuItem>
-              <MenuItem value="opcion2">Opción 2</MenuItem>
+              <MenuItem value="CITAVAL">CITAVAL</MenuItem>
+              <MenuItem value="TRANSAVIC">TRANSAVIC</MenuItem>
               <MenuItem value="TestDVGP">TEST</MenuItem>
             </Select>
           </FormControl>

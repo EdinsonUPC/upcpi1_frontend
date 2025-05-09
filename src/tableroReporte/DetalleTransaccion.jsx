@@ -88,38 +88,17 @@ const DetalleTransaccion = ({ onUpdate, lineasIniciales = [] }) => {
         spacing={2}
         sx={{ display: { xs: "none", md: "flex" }, fontWeight: "bold", mb: 1 }}
       >
-        {[
-          "Dev.",
-          "P.Bruto",
-          "P.Tara",
-          "P.Neto",
-          "Cant. Jabas",
-          "Unid.",
-          "",
-        ].map((h) => (
-          <Box flex={1} key={h}>
-            <Typography align="center">{h}</Typography>
-          </Box>
-        ))}
+        {["P.Bruto", "P.Tara", "P.Neto", "Cant. Jabas", "Unid.", ""].map(
+          (h) => (
+            <Box flex={1} key={h}>
+              <Typography align="center">{h}</Typography>
+            </Box>
+          )
+        )}
       </Stack>
 
       {lineas.map((ln, idx) => (
         <Stack key={idx} direction="row" spacing={2} alignItems="center" mb={1}>
-          {/* Devolución */}
-          <Box flex={1} display="flex" alignItems="center">
-            <FormControlLabel
-              sx={{ display: { xs: "flex", md: "none" } }}
-              label="Dev."
-              control={<Box component="span" />}
-            />
-            <Checkbox
-              checked={ln.EsDevolucion === "S"}
-              onChange={(e) =>
-                handleInputChange(idx, "EsDevolucion", e.target.checked)
-              }
-            />
-          </Box>
-
           {/* Peso Bruto */}
           <Box flex={1}>
             <Typography

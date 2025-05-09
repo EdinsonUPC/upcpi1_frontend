@@ -133,18 +133,12 @@ class RepositoryVentas {
   }
 
   async createVenta(dtoVenta) {
-    const token = this.getToken();
-    const tokenJSON = JSON.parse(token);
     const payload = {
       venta: dtoVenta,
-      source: "Web",
-      idCaja: tokenJSON.idCaja,
-      token,
     };
-    console.log("Creating venta with payload:", payload);
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/ventas/create-venta`,
+        `${import.meta.env.VITE_API_URL}/api/ventas/create`,
         payload
       );
       if (![200, 201].includes(response.status)) {

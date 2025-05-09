@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Autocomplete, TextField, CircularProgress, Chip } from "@mui/material";
+import { Autocomplete, TextField, CircularProgress } from "@mui/material";
 import repositoryClientsInstance from "../repositorys/clientRepository";
 
 const DdownMultiSearchClient = ({
@@ -50,7 +50,6 @@ const DdownMultiSearchClient = ({
       isOptionEqualToValue={(opt, val) => opt.value === val.value}
       value={selectedOptions}
       loading={loading}
-      disableCloseOnSelect
       onChange={(_, newValue) => {
         setSelectedOptions(newValue);
         const result = multiple
@@ -67,7 +66,7 @@ const DdownMultiSearchClient = ({
             ...params.InputProps,
             endAdornment: (
               <>
-                {loading && <CircularProgress size={20} />}
+                {loading && <CircularProgress color="inherit" size={20} />}
                 {params.InputProps.endAdornment}
               </>
             ),
@@ -75,14 +74,14 @@ const DdownMultiSearchClient = ({
           fullWidth
         />
       )}
-      renderTags={(tagValue, getTagProps) =>
-        tagValue.map((opt, idx) => {
-          const { key, ...tagPropsWithoutKey } = getTagProps({ index: idx });
-          return (
-            <Chip key={opt.value} label={opt.label} {...tagPropsWithoutKey} />
-          );
-        })
-      }
+      // renderTags={(tagValue, getTagProps) =>
+      //   tagValue.map((opt, idx) => {
+      //     const { key, ...tagPropsWithoutKey } = getTagProps({ index: idx });
+      //     return (
+      //       <Chip key={opt.value} label={opt.label} {...tagPropsWithoutKey} />
+      //     );
+      //   })
+      // }
       sx={{ minWidth: 200 }}
     />
   );
