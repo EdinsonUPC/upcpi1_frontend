@@ -157,7 +157,7 @@ const FilterButtonsMUI = ({
                   })
                 }
               />
-              <TextField
+              {/* <TextField
                 size="small"
                 label="Monto Inicial"
                 type="number"
@@ -204,7 +204,7 @@ const FilterButtonsMUI = ({
                     numSaldoFinal: e.target.value,
                   })
                 }
-              />
+              /> */}
               <Stack direction="row" spacing={1}>
                 <Button
                   fullWidth

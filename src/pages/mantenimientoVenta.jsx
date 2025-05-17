@@ -13,6 +13,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import moment from "moment";
 import FilterButtonsMUI from "../mantenimientoVenta/FilterButtonsMUI";
+import { useNavigate } from "react-router-dom";
 
 const VentasListadoMUI = ({ setSelectedVenta, setActiveStep }) => {
   const [filterData, setFilterData] = useState({
@@ -41,7 +42,7 @@ const VentasListadoMUI = ({ setSelectedVenta, setActiveStep }) => {
         `${import.meta.env.VITE_API_URL}/api/ventas/find`,
         { ...filterData, token: tempToken }
       );
-      setResultData(response.data);
+      setResultData(response.data.filter((x) => x.Estado !== "ANL"));
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -59,22 +60,20 @@ const VentasListadoMUI = ({ setSelectedVenta, setActiveStep }) => {
 
   const handleDelete = async (Id_Venta) => {
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/ventas/eliminar-venta`,
-        {
-          token: tempToken,
-          intIdVenta: Id_Venta,
-        }
-      );
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/ventas/anular`, {
+        intIdVenta: Id_Venta,
+      });
       setResultData((prev) => prev.filter((x) => x.Id_Venta !== Id_Venta));
     } catch (error) {
       console.error("Error eliminando venta:", error);
     }
   };
+  let navigate = useNavigate();
 
   const handleEdit = (sale) => {
-    setActiveStep(2);
-    setSelectedVenta(sale);
+    navigate(`/sales/${sale.Id_Venta}`);
+    // setActiveStep(2);
+    // setSelectedVenta(sale);
   };
 
   const columns = [
@@ -94,33 +93,35 @@ const VentasListadoMUI = ({ setSelectedVenta, setActiveStep }) => {
       field: "Fecha",
       headerName: "Fecha",
       width: 100,
-      valueGetter: (params) =>
-        moment(params.value).isValid()
-          ? moment(params.value).format("DD/MM")
-          : "",
+      // valueGetter: (params) => {
+      //   return moment(params).format("DD/MM/YYYY");
+      // },
     },
     { field: "Cliente", headerName: "Cliente", width: 150 },
     { field: "Producto", headerName: "Producto", width: 150 },
-    { field: "Total_Devolucion", headerName: "Devolución", width: 100 },
+    // { field: "Total_Devolucion", headerName: "Devolución", width: 100 },
     { field: "Total_Peso_Neto", headerName: "Peso Neto", width: 100 },
     { field: "Precio", headerName: "Precio", width: 100 },
+    { field: "Monto_Total", headerName: "Monto", width: 100 },
     {
       field: "acciones",
       headerName: "Acciones",
       width: 150,
-      renderCell: (params) => (
-        <>
-          <IconButton color="warning" onClick={() => handleEdit(params.row)}>
-            <FaEdit />
-          </IconButton>
-          <IconButton
-            color="error"
-            onClick={() => handleDelete(params.row.Id_Venta)}
-          >
-            <FaTrash />
-          </IconButton>
-        </>
-      ),
+      renderCell: (params) => {
+        return (
+          <>
+            <IconButton color="warning" onClick={() => handleEdit(params.row)}>
+              <FaEdit />
+            </IconButton>
+            <IconButton
+              color="error"
+              onClick={() => handleDelete(params.row.Id_Venta)}
+            >
+              <FaTrash />
+            </IconButton>
+          </>
+        );
+      },
     },
   ];
 

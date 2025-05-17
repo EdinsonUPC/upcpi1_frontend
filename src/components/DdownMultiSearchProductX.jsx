@@ -34,7 +34,6 @@ const DdownMultiSearchProduct = ({ onChange, multiple = true }) => {
       loading={loading}
       getOptionLabel={(option) => option.label}
       onChange={(event, value) => {
-        console.log("Productos seleccionados:", value);
         // value puede ser array o un solo objeto dependiendo de multiple
         if (multiple) {
           onChange(value.map((v) => v.id));

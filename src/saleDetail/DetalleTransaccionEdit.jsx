@@ -1,21 +1,19 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Stack,
   TextField,
-  Checkbox,
-  FormControlLabel,
   IconButton,
   Button,
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import dtoLineaVenta from "./dtoLineaVenta";
-import DetalleTara from "./DetalleTara";
+import dtoLineaVenta from "../tableroReporte/dtoLineaVenta";
+import DetalleTaraEdit from "./DetalleTaraEdit";
 
 const UNIDADES_POR_JAVA = 8;
 
-const DetalleTransaccion = ({ onUpdate, lineasIniciales = [] }) => {
+const DetalleTransaccionEdit = ({ onUpdate, lineasIniciales = [] }) => {
   const [lineas, setLineas] = useState(lineasIniciales);
 
   useEffect(() => {
@@ -137,7 +135,7 @@ const DetalleTransaccion = ({ onUpdate, lineasIniciales = [] }) => {
                 }
               />
             </Box>
-            <DetalleTara
+            <DetalleTaraEdit
               onApply={(t, cj, opts) => handleApplyTara(idx, t, cj, opts)}
               detalleTaraOpciones={ln.detalleTaraOpciones}
             />
@@ -210,4 +208,4 @@ const DetalleTransaccion = ({ onUpdate, lineasIniciales = [] }) => {
   );
 };
 
-export default DetalleTransaccion;
+export default DetalleTransaccionEdit;

@@ -4,6 +4,7 @@ import { Container, Box, Tabs, Tab } from "@mui/material";
 // import FormHistorialTableroElectronico from "./FormHistorialTableroElectronico";
 import { useState } from "react";
 import FormTableroElectronico from "../tableroReporte/FormTableroElectronico";
+// import VentasListadoMUI from "./mantenimientoVenta";
 
 function TableroReporte() {
   const [value, setValue] = useState(0);
@@ -21,7 +22,7 @@ function TableroReporte() {
           aria-label="Tabs tablero electrónico"
         >
           <Tab label="Tablero Electrónico" />
-          <Tab label="Historial" />
+          {/* <Tab label="Historial" /> */}
         </Tabs>
       </Box>
 

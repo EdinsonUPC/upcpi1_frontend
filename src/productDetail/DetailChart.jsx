@@ -124,8 +124,6 @@ export default function DetailChart({ id_producto }) {
     apiFetch();
   }, [monthSelect]);
 
-  console.log(historialVentas);
-  console.log(prediccionVenta);
   const dataLinealGraphic = () => {
     const x = historialVentas.data
       ? historialVentas.data.map((mes) => mes.QuantitySold)

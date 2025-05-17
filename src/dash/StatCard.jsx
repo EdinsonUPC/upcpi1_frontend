@@ -10,8 +10,6 @@ import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
 import { areaElementClasses } from "@mui/x-charts/LineChart";
 
 function getDaysInMonth(month, year) {
-  console.log(month);
-  console.log(year);
   const days = [];
 
   for (let offset = -11; offset <= 1; offset++) {

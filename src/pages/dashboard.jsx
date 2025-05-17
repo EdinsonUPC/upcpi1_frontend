@@ -17,94 +17,60 @@ import SessionsChartQuantity from "../dash/SessionsChartquantity";
 moment().format();
 moment().locale("es");
 
-// const data = [
-//   {
-//     title: "Monto de ventas de este mes",
-//     value: "14k",
-//     interval: "Ultimos 3 meses",
-//     trend: "up",
-//     data: dataLinealGraphic(),
-//   },
-// {
-//   title: "Conversions",
-//   value: "325",
-//   interval: "Last 30 days",
-//   trend: "down",
-//   data: [
-//     1640, 1250, 970, 1130, 1050, 900, 720, 1080, 900, 450, 920, 820, 840, 600,
-//     820, 780, 800, 760, 380, 740, 660, 620, 840, 500, 520, 480, 400, 360, 300,
-//     220,
-//   ],
-// },
-// {
-//   title: "Event count",
-//   value: "200k",
-//   interval: "Last 30 days",
-//   trend: "neutral",
-//   data: [
-//     500, 400, 510, 530, 520, 600, 530, 520, 510, 730, 520, 510, 530, 620, 510,
-//     530, 520, 410, 530, 520, 610, 530, 520, 610, 530, 420, 510, 430, 520, 510,
-//   ],
-// },
-// ];
-
 export default function Dashboard() {
-  const [historialVentas, setHistorialVentas] = useState({});
-  const hoy = Date.now();
-  const momemtHoy = moment(hoy);
+  // const [historialVentas, setHistorialVentas] = useState({});
+  // const hoy = Date.now();
+  // const momemtHoy = moment(hoy);
 
-  useEffect(() => {
-    const apiFetch = async () => {
-      const { data } = await axios.post(
-        "http://localhost:8000/api/ventas/filterQuantityByPeriod",
-        {
-          date: momemtHoy.format("YYYY-MM-DD"),
-        }
-      );
+  // useEffect(() => {
+  //   const apiFetch = async () => {
+  //     const { data } = await axios.post(
+  //       "http://localhost:8000/api/ventas/filterQuantityByPeriod",
+  //       {
+  //         date: momemtHoy.format("YYYY-MM-DD"),
+  //       }
+  //     );
 
-      setHistorialVentas(data);
-    };
-    apiFetch();
-  }, []);
+  //     setHistorialVentas(data);
+  //   };
+  //   apiFetch();
+  // }, []);
 
-  const dataLinealGraphic = () => {
-    const x = historialVentas.data
-      ? historialVentas.data.map((mes) => mes.TotalAmount)
-      : [];
+  // const dataLinealGraphic = () => {
+  //   const x = historialVentas.data
+  //     ? historialVentas.data.map((mes) => mes.TotalAmount)
+  //     : [];
 
-    return x;
-  };
+  //   return x;
+  // };
 
-  const arrayDataLineal = dataLinealGraphic();
-  let tendencia = 0;
-  // Verificar si el array tiene al menos dos elementos
-  if (arrayDataLineal.length >= 2) {
-    const penultimo = arrayDataLineal[arrayDataLineal.length - 2]; // Penúltimo elemento
-    const ultimo = arrayDataLineal[arrayDataLineal.length - 1]; // Último elemento
+  // const arrayDataLineal = dataLinealGraphic();
+  // let tendencia = 0;
+  // // Verificar si el array tiene al menos dos elementos
+  // if (arrayDataLineal.length >= 2) {
+  //   const penultimo = arrayDataLineal[arrayDataLineal.length - 2]; // Penúltimo elemento
+  //   const ultimo = arrayDataLineal[arrayDataLineal.length - 1]; // Último elemento
 
-    if (penultimo < ultimo) {
-      tendencia = 1;
-    } else {
-      tendencia = -1;
-    }
-  }
+  //   if (penultimo < ultimo) {
+  //     tendencia = 1;
+  //   } else {
+  //     tendencia = -1;
+  //   }
+  // }
 
-  console.log("array");
-  console.log(arrayDataLineal);
-
-  const data = [
-    {
-      title: "Monto de ventas de este mes",
-      value: arrayDataLineal.length
-        ? `${arrayDataLineal[arrayDataLineal.length - 1]}`
-        : "0",
-      interval: "Ultimos 3 meses",
-      trend: tendencia > 0 ? "up" : "down",
-      data: arrayDataLineal,
-      month: momemtHoy.format("MM"),
-      year: momemtHoy.format("YYYY"),
-    },
-  ];
+  // const data = [
+  //   {
+  //     title: "Monto de ventas de este mes",
+  //     value: arrayDataLineal.length
+  //       ? `${arrayDataLineal[arrayDataLineal.length - 1]}`
+  //       : "0",
+  //     interval: "Ultimos 3 meses",
+  //     trend: tendencia > 0 ? "up" : "down",
+  //     data: arrayDataLineal,
+  //     month: momemtHoy.format("MM"),
+  //     year: momemtHoy.format("YYYY"),
+  //   },
+  // ];
 
   return (
     <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>

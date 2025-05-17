@@ -14,14 +14,14 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // import moment from "moment";
 import { useEffect, useRef, useState } from "react";
-import dtoVenta from "./dtoVenta";
-import DdownMultiSearchPersonal from "../components/DdownMultiSearchPersonal";
-import DdownMultiSearchProduct from "../components/DdownMultiSearchProduct";
-import DdownMultiSearchClient from "../components/DdownMultiSearchClient";
+import DdownMultiSearchPersonal from "../components/DdownMultiSearchPersonal.jsx";
+import DdownMultiSearchProduct from "../components/DdownMultiSearchProduct.jsx";
+import DdownMultiSearchClient from "../components/DdownMultiSearchClient.jsx";
 // import repositoryParametroInstance from "../repositorys/parametrosRepository";
-import DetalleTransaccion from "./DetalleTransaccion.jsx";
 import DdownSearchParametro from "../components/DdownSearchParametro.jsx";
 import repositoryVentasInstance from "../repositorys/ventasRepository.js";
+import dtoVenta from "../tableroReporte/dtoVenta.js";
+import DetalleTransaccionEdit from "./DetalleTransaccionEdit.jsx";
 
 // import DdownMultiSearchPersonal from './DdownMultiSearchPersonal';
 // import DdownMultiSearchProduct from './DdownMultiSearchProduct';
@@ -31,10 +31,57 @@ import repositoryVentasInstance from "../repositorys/ventasRepository.js";
 // import DetalleTransaccion from './DetalleTransaccion';
 // import DdownSearchParametro from './DdownSearchParametro';
 
-const FormTableroElectronico = () => {
+const FormEditSale = ({ sale }) => {
+  const [venta, setVenta] = useState(dtoVenta());
+
+  useEffect(() => {
+    console.log("sale.lineasVenta");
+    console.log(sale.lineasVenta);
+    const lineasVentaTemporal = sale.lineasVenta?.map((linea) => ({
+      ...linea,
+      PesoBruto: linea.Peso_Bruto,
+      PesoTara: linea.Peso_Tara,
+      PesoNeto: linea.Peso_Neto,
+      CantidadJavas: linea.Cantidad_Javas,
+      detalleTaraOpciones: JSON.parse(linea.detalleTaraOpciones),
+    }));
+    console.log(lineasVentaTemporal);
+    setVenta({
+      IdVenta: sale.Id_Venta,
+      Precio: sale.Precio,
+      MontoSubTotal: 0,
+      MontoIGV: 0,
+      MontoTotal: sale.Monto_Total,
+      TotalPesoBruto: sale.Total_Peso_Bruto,
+      TotalPesoTara: sale.Total_Peso_Tara,
+      TotalPesoNeto: sale.Total_Peso_Neto,
+      Observacion: sale.Observacion,
+      IdCliente: sale.Id_Cliente,
+      IdEstado: sale.Estado,
+      IdEmpresa: 1,
+      IdProducto: sale.Id_Producto,
+      ListaLineaVenta: lineasVentaTemporal ? lineasVentaTemporal : [],
+      TotalUnidades: sale.TotalUnidades,
+      fecha: sale.Fecha,
+      IdPesador: sale.IdPesador,
+      tipoTransaccion: "",
+      idTipoDocumento: "0",
+      idFormaPago: "EFE",
+      idBanco: "",
+    });
+    setDefaultRefs({
+      IdPesador: sale.IdPesador,
+      idProducto: sale.Id_Producto,
+      idCliente: sale.Id_Cliente,
+      idTipoPago: sale.idTipoDocumento,
+      idFormaPago: sale.idFormaPago,
+    });
+  }, [sale]);
+  console.log("venta");
+  console.log(venta);
+
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  const [venta, setVenta] = useState(dtoVenta());
   const [selectedTipo, setSelectedTipo] = useState("venta");
   const [message, setMessage] = useState(null);
   const [alertVariant, setAlertVariant] = useState("success");
@@ -48,27 +95,6 @@ const FormTableroElectronico = () => {
   // Actualizar Redux y estado local al cambiar IdPesador
   const handlePesadorChange = (newIdPesador) => {
     setVenta((prev) => ({ ...prev, IdPesador: newIdPesador }));
-  };
-
-  // Extraer el ID del pesador desde la cookie
-  const initializePesador = () => {
-    // const token = Cookies.get("token");
-    const token = localStorage.getItem("user");
-    if (token) {
-      try {
-        const tokenJSON = JSON.parse(token);
-        if (tokenJSON && typeof tokenJSON.idPersonal === "number") {
-          setVenta((prevVenta) => ({
-            ...prevVenta,
-            IdPesador: tokenJSON.idPersonal,
-          }));
-        } else {
-          console.error("El token no contiene un idPersonal válido.");
-        }
-      } catch (error) {
-        console.error("Error al analizar la cookie de token:", error);
-      }
-    }
   };
 
   // Calcular totales de la venta
@@ -156,7 +182,7 @@ const FormTableroElectronico = () => {
     }
 
     const confirm = window.confirm(
-      "¿Está seguro de que desea procesar esta venta?"
+      "¿Está seguro de que desea editar esta venta?"
     );
     if (!confirm) return;
 
@@ -173,13 +199,20 @@ const FormTableroElectronico = () => {
         TotalPesoBruto: totales.totalPesoBruto,
         TotalPesoTara: totales.totalPesoTara,
         TotalPesoNeto: totales.totalPesoNeto,
+        ListaLineaVenta: venta.ListaLineaVenta.map((linea) => ({
+          ...linea,
+          detalleTaraOpciones:
+            typeof linea.detalleTaraOpciones === "string"
+              ? linea.detalleTaraOpciones
+              : JSON.stringify(linea.detalleTaraOpciones),
+        })),
         // TotalJabas:
         // TotalUnidades:,
         // TotalAmortizacion:TotalAmortizacion,
         // TotalSaldo:TotalSaldo,
       };
 
-      const response = await repositoryVentasInstance.createVenta(updatedVenta);
+      const response = await repositoryVentasInstance.editVenta(updatedVenta);
 
       if (response.success) {
         //alert('esperando'); FormTableroElectronico
@@ -217,9 +250,6 @@ const FormTableroElectronico = () => {
       setAlertVariant("danger");
     }
   };
-  useEffect(() => {
-    initializePesador();
-  }, []); // Ejecutar solo una vez al cargar el componente
 
   useEffect(() => {
     if (venta.IdCliente && venta.IdProducto) {
@@ -231,10 +261,19 @@ const FormTableroElectronico = () => {
     setVenta((prevData) => ({ ...prevData, [data.name]: data.value }));
   };
 
+  const pesadorRef = useRef();
   const productoRef = useRef();
   const clienteRef = useRef();
   const tipoPagoRef = useRef();
   const formaPagoRef = useRef();
+
+  const setDefaultRefs = (x) => {
+    pesadorRef.current?.setValue(x.IdPesador);
+    productoRef.current?.setValue(x.idProducto);
+    clienteRef.current?.setValue(x.idCliente);
+    tipoPagoRef.current?.reset(x.idTipoPago);
+    formaPagoRef.current?.reset(x.idFormaPago);
+  };
 
   const resetearRefs = () => {
     productoRef.current?.reset();
@@ -246,7 +285,9 @@ const FormTableroElectronico = () => {
     <Container>
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="h6">Datos de la Venta</Typography>
+          <Typography variant="h6">
+            Datos de la Venta: {venta.IdVenta}
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Stack spacing={2}>
@@ -289,6 +330,7 @@ const FormTableroElectronico = () => {
               <Stack spacing={1} flex={1}>
                 <FormLabel>Pesador</FormLabel>
                 <DdownMultiSearchPersonal
+                  ref={pesadorRef}
                   multiple={false}
                   onChange={(value) => handlePesadorChange(parseInt(value))}
                   defaultValue={venta.IdPesador}
@@ -374,7 +416,7 @@ const FormTableroElectronico = () => {
             </Button>
 
             {/* Detalle transacción */}
-            <DetalleTransaccion
+            <DetalleTransaccionEdit
               onUpdate={(lineas) =>
                 setVenta({ ...venta, ListaLineaVenta: lineas })
               }
@@ -587,12 +629,12 @@ const FormTableroElectronico = () => {
         <Button variant="contained" color="primary" onClick={handleAccept}>
           Aceptar
         </Button>
-        <Button variant="outlined" color="secondary" onClick={handleReset}>
+        {/* <Button variant="outlined" color="secondary" onClick={handleReset}>
           Limpiar
-        </Button>
+        </Button> */}
       </Stack>
     </Container>
   );
 };
 
-export default FormTableroElectronico;
+export default FormEditSale;

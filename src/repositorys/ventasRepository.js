@@ -91,7 +91,6 @@ class RepositoryVentas {
       idCaja: tokenJSON.idCaja,
       token,
     };
-    console.log("Applying price changes:", params);
     return axios.post(
       `${import.meta.env.VITE_API_URL}/api/ventas/aplicar-cambio-precios`,
       params
@@ -156,6 +155,30 @@ class RepositoryVentas {
     }
   }
 
+  async editVenta(dtoVenta) {
+    const payload = {
+      venta: dtoVenta,
+    };
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/ventas/edit`,
+        payload
+      );
+      if (![200, 201].includes(response.status)) {
+        throw new Error("Error al procesar la venta: Código inválido");
+      }
+      if (!response.data?.success) {
+        throw new Error(
+          response.data?.message || "Error inesperado al procesar la venta"
+        );
+      }
+      return response.data;
+    } catch (err) {
+      console.error("Error en createVenta:", err.response?.data || err.message);
+      throw new Error(err.response?.data?.message || "Error al crear la venta");
+    }
+  }
+
   async listarDetalleVenta(fecha, idProducto, idPesador) {
     const token = this.getToken();
     try {
@@ -187,7 +210,6 @@ class RepositoryVentas {
       source: "WEB",
       token,
     };
-    console.log("Deleting linea venta with payload:", payload);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/ventas/eliminar-linea`,

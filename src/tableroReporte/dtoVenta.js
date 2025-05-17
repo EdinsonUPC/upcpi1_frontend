@@ -33,9 +33,8 @@ const dtoVenta = () => ({
   ListaAmortizacion: [],
   FechaCreacion: new Date(),
   TotalUnidades: 0,
-  fecha: moment()
-    .tz(Intl.DateTimeFormat().resolvedOptions().timeZone)
-    .format("YYYY-MM-DD"),
+  // fecha: "new Date()",
+  fecha: moment(new Date()).format("YYYY-MM-DD"),
   IdPesador: 0,
   tipoTransaccion: "",
   idTipoDocumento: "0",

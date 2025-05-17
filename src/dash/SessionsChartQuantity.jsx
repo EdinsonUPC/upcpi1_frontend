@@ -59,7 +59,7 @@ export default function SessionsChartQuantity() {
   const [monthSelect, setMonthSelect] = useState(momemtHoy);
   const [yearSelect, setYearSelect] = useState(momemtYear);
 
-  const data = getDaysInMonth(parseInt(monthSelect), yearSelect);
+  const data = getDaysInMonth(parseInt(monthSelect) - 1, yearSelect);
 
   const colorPalette = [
     theme.palette.primary.light,
@@ -76,8 +76,8 @@ export default function SessionsChartQuantity() {
     const apiFetch = async () => {
       const momemtHoyApi = moment(hoy)
         .set("year", yearSelect)
-        .set("month", monthSelect - 1)
-        .set("date", 29);
+        .set("month", monthSelect - 2)
+        .endOf("month");
       const { data } = await axios.post(
         "http://localhost:8000/api/ventas/filterQuantityByPeriod",
         {
@@ -87,14 +87,10 @@ export default function SessionsChartQuantity() {
       const { data: dataPrediccion } = await axios.post(
         "http://localhost:8000/api/ventas/predictionQuantityByPeriod",
         {
-          date: momemtHoyApi.add(1, "M").format("YYYY-MM-DD"),
+          date: momemtHoyApi.add(1, "M").endOf("month").format("YYYY-MM-DD"),
         }
       );
 
-      console.log("data");
-      console.log(data);
-      console.log("dataPrediccion");
-      console.log(dataPrediccion);
       setPrediccionVenta(dataPrediccion);
       setHistorialVentas(data);
     };
@@ -112,7 +108,6 @@ export default function SessionsChartQuantity() {
     return x.concat(y);
   };
 
-  console.log(dataLinealGraphic());
   return (
     <Card variant="outlined" sx={{ width: "100%" }}>
       <CardContent>

@@ -78,7 +78,7 @@ const Layout = () => {
             <MenuItem
               onClick={() => handleMenuClose(2, "ventas/tablero-reporte")}
             >
-              Tablero Reporte
+              Tablero Básico
             </MenuItem>
             <MenuItem
               onClick={() => handleMenuClose(2, "ventas/mantenimiento")}

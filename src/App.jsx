@@ -8,6 +8,7 @@ import Products from "./pages/products";
 import ProductDetail from "./pages/productDetail";
 import TableroReporte from "./pages/tableroReporte";
 import VentasListadoMUI from "./pages/mantenimientoVenta";
+import SaleDetail from "./pages/saleDetail";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/products" element={<Products />} />
               <Route path="/products/:productId" element={<ProductDetail />} />
+              <Route path="/sales/:saleId" element={<SaleDetail />} />
               <Route
                 path="/ventas/tablero-reporte"
                 element={<TableroReporte />}

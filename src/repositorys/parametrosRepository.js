@@ -58,8 +58,6 @@ class RepositoryParametros {
 
       if (!parsed) {
         const apiData = await this.fetchParametroFromApi();
-        console.log("apiData");
-        console.log(apiData);
         localStorage.setItem(this.PARAMETRO_KEY, JSON.stringify(apiData));
         return apiData;
       }
@@ -84,7 +82,6 @@ class RepositoryParametros {
   removeParametroFromLocalStorage() {
     try {
       localStorage.removeItem(this.PARAMETRO_KEY);
-      console.log("Datos de parametro eliminados del Local Storage");
     } catch (error) {
       console.error(
         "Error al eliminar datos de parametro del Local Storage:",
