@@ -1,34 +1,15 @@
 import Grid from "@mui/material/Grid2";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Copyright } from "@mui/icons-material";
-import StatCard from "../dashboard/components/StatCard";
-import PageViewsBarChart from "../dashboard/components/PageViewsBarChart";
 import { useEffect, useState } from "react";
-import moment from "moment";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import DetailChart from "../productDetail/DetailChart";
+import { Container } from "@mui/material";
 
 export default function ProductDetail() {
-  const data = [
-    {
-      title: "Users",
-      value: "14k",
-      interval: "Last 30 days",
-      trend: "up",
-      data: [
-        200, 24, 220, 260, 240, 380, 100, 240, 280, 240, 300, 340, 320, 360,
-        340, 380, 360, 400, 380, 420, 400, 640, 340, 460, 440, 480, 460, 600,
-        880, 920,
-      ],
-    },
-  ];
-
   const [product, setProduct] = useState({});
   // const [predicciones, setPredicciones] = useState([]);
-  const hoy = Date.now();
-  const momemtHoy = moment(hoy);
   let params = useParams();
 
   useEffect(() => {
@@ -46,24 +27,32 @@ export default function ProductDetail() {
   }, []);
 
   return (
-    <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
+    <Container>
       {/* cards */}
-      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
+      <Typography component="h2" variant="h5" color="info" sx={{ mb: 2 }}>
         Detalle del producto
       </Typography>
-      <Typography component="h4" variant="h6" sx={{ mb: 2 }}>
+      <Typography
+        component="p"
+        variant="body1"
+        style={{ fontWeight: 600 }}
+        sx={{ mb: 2 }}
+      >
         Nombre: {product.nombre}
       </Typography>
-      <Typography component="h4" variant="h6" sx={{ mb: 2 }}>
+      <Typography component="p" variant="body1" sx={{ mb: 2 }}>
         Precio de venta: {product.precio_venta}
       </Typography>
-      <Typography component="h4" variant="h6" sx={{ mb: 2 }}>
+      <Typography component="p" variant="body1" sx={{ mb: 2 }}>
         Precio de compra: {product.precio_compra}
       </Typography>
-      <Typography component="h4" variant="h6" sx={{ mb: 2 }}>
+      <Typography component="p" variant="body1" sx={{ mb: 2 }}>
         Margen de ganancia: {product.margen}
       </Typography>
 
+      <Typography component="h2" variant="h5" color="info" sx={{ mb: 2 }}>
+        Predicción de ventas
+      </Typography>
       <Grid
         container
         spacing={2}
@@ -83,6 +72,6 @@ export default function ProductDetail() {
       </Grid>
 
       <Copyright sx={{ my: 4 }} />
-    </Box>
+    </Container>
   );
 }

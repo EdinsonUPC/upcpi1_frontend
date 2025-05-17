@@ -15,7 +15,7 @@ import moment from "moment";
 import FilterButtonsMUI from "../mantenimientoVenta/FilterButtonsMUI";
 import { useNavigate } from "react-router-dom";
 
-const VentasListadoMUI = ({ setSelectedVenta, setActiveStep }) => {
+const VentasListadoMUI = () => {
   const [filterData, setFilterData] = useState({
     datFechaInicial: moment().format("YYYY-MM-DD"),
     datFechaFinal: moment().format("YYYY-MM-DD"),
@@ -42,7 +42,7 @@ const VentasListadoMUI = ({ setSelectedVenta, setActiveStep }) => {
         `${import.meta.env.VITE_API_URL}/api/ventas/find`,
         { ...filterData, token: tempToken }
       );
-      setResultData(response.data.filter((x) => x.Estado !== "ANL"));
+      setResultData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -63,7 +63,9 @@ const VentasListadoMUI = ({ setSelectedVenta, setActiveStep }) => {
       await axios.post(`${import.meta.env.VITE_API_URL}/api/ventas/anular`, {
         intIdVenta: Id_Venta,
       });
-      setResultData((prev) => prev.filter((x) => x.Id_Venta !== Id_Venta));
+      setResultData((prev) =>
+        prev.map((x) => (x.Id_Venta === Id_Venta ? { ...x, Estado: "ANL" } : x))
+      );
     } catch (error) {
       console.error("Error eliminando venta:", error);
     }
@@ -103,6 +105,7 @@ const VentasListadoMUI = ({ setSelectedVenta, setActiveStep }) => {
     { field: "Total_Peso_Neto", headerName: "Peso Neto", width: 100 },
     { field: "Precio", headerName: "Precio", width: 100 },
     { field: "Monto_Total", headerName: "Monto", width: 100 },
+    { field: "Estado", headerName: "Estado", width: 100 },
     {
       field: "acciones",
       headerName: "Acciones",

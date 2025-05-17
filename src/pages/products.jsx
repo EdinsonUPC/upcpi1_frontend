@@ -1,36 +1,11 @@
 import Grid from "@mui/material/Grid2";
-import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Copyright } from "@mui/icons-material";
-import {
-  Checkbox,
-  FormControl,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-  TableSortLabel,
-  Toolbar,
-  Tooltip,
-} from "@mui/material";
-import { visuallyHidden } from "@mui/utils";
-import PropTypes from "prop-types";
-import { alpha } from "@mui/material/styles";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import { useEffect, useState } from "react";
-import CustomizedDataGrid from "../dashboard/components/CustomizedDataGrid";
 import EnhancedTable from "../products/EnhancedTable";
 import moment from "moment";
 import axios from "axios";
+import { Container } from "@mui/material";
 moment().format();
 moment().locale("es");
 
@@ -66,7 +41,7 @@ export default function Products() {
   }, []);
 
   return (
-    <Box sx={{ width: "100%", maxWidth: { sm: "100%", md: "1700px" } }}>
+    <Container>
       {/* cards */}
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Productos
@@ -83,6 +58,6 @@ export default function Products() {
         </Grid> */}
       </Grid>
       <Copyright sx={{ my: 4 }} />
-    </Box>
+    </Container>
   );
 }

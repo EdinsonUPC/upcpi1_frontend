@@ -1,6 +1,5 @@
 import { Container, Box, Tabs, Tab } from "@mui/material";
 // import FormTableroElectronico from "./FormTableroElectronico";
-
 // import FormHistorialTableroElectronico from "./FormHistorialTableroElectronico";
 import { useState } from "react";
 import FormTableroElectronico from "../tableroReporte/FormTableroElectronico";
@@ -19,9 +18,9 @@ function TableroReporte() {
         <Tabs
           value={value}
           onChange={handleChange}
-          aria-label="Tabs tablero electrónico"
+          aria-label="Tabs tablero Básico"
         >
-          <Tab label="Tablero Electrónico" />
+          <Tab label="Tablero Básico" />
           {/* <Tab label="Historial" /> */}
         </Tabs>
       </Box>

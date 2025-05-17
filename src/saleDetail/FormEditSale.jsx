@@ -22,6 +22,7 @@ import DdownSearchParametro from "../components/DdownSearchParametro.jsx";
 import repositoryVentasInstance from "../repositorys/ventasRepository.js";
 import dtoVenta from "../tableroReporte/dtoVenta.js";
 import DetalleTransaccionEdit from "./DetalleTransaccionEdit.jsx";
+import { useNavigate } from "react-router-dom";
 
 // import DdownMultiSearchPersonal from './DdownMultiSearchPersonal';
 // import DdownMultiSearchProduct from './DdownMultiSearchProduct';
@@ -132,7 +133,7 @@ const FormEditSale = ({ sale }) => {
   }, [venta.ListaLineaVenta]);
 
   // Manejar cambio de tipo de transacción (radio buttons)
-
+  const navigate = useNavigate();
   const handleReset = () => {
     const tempVenta = dtoVenta();
     tempVenta.IdVenta = 0;
@@ -159,7 +160,10 @@ const FormEditSale = ({ sale }) => {
     setVenta({ ...tempVenta, ListaLineaVenta: [] });
     setSelectedTipo("venta");
     resetearRefs();
-    setTimeout(() => setMessage(null), 5000);
+    setTimeout(() => {
+      setMessage(null);
+      navigate("/ventas/mantenimiento");
+    }, 1000);
   };
 
   const handleAccept = async () => {

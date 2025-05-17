@@ -23,16 +23,8 @@ import DetalleTransaccion from "./DetalleTransaccion.jsx";
 import DdownSearchParametro from "../components/DdownSearchParametro.jsx";
 import repositoryVentasInstance from "../repositorys/ventasRepository.js";
 
-// import DdownMultiSearchPersonal from './DdownMultiSearchPersonal';
-// import DdownMultiSearchProduct from './DdownMultiSearchProduct';
-// import DdownMultiSearchClient from './DdownMultiSearchClient';
-// import DdownSearchVenta from './DdownSearchVenta';
-// import NotaVentaForPrint from './NotaVentaForPrint';
-// import DetalleTransaccion from './DetalleTransaccion';
-// import DdownSearchParametro from './DdownSearchParametro';
-
 const FormTableroElectronico = () => {
-  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  // const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   const [venta, setVenta] = useState(dtoVenta());
   const [selectedTipo, setSelectedTipo] = useState("venta");
@@ -186,7 +178,7 @@ const FormTableroElectronico = () => {
         // Refrescar el historial
         // setRefreshHistorial(true); // Activar la bandera
         setAlertVariant("success");
-        setMessage("Venta procesada correctamente");
+        setMessage("Venta procesada correctamente: ID" + response.data);
         handleReset();
       } else {
         throw new Error(
