@@ -9,6 +9,9 @@ import ProductDetail from "./pages/productDetail";
 import TableroReporte from "./pages/tableroReporte";
 import VentasListadoMUI from "./pages/mantenimientoVenta";
 import SaleDetail from "./pages/saleDetail";
+import Dash from "./dashboard/Dashboard";
+import AmortizarVenta from "./pages/amortizarVenta";
+import ReporteVenta from "./pages/ReporteVenta";
 
 function App() {
   return (
@@ -21,9 +24,15 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dash" element={<Dash />} />
               <Route path="/products" element={<Products />} />
               <Route path="/products/:productId" element={<ProductDetail />} />
               <Route path="/sales/:saleId" element={<SaleDetail />} />
+              <Route
+                path="/amortization/:saleId"
+                element={<AmortizarVenta />}
+              />
+              <Route path="/report/" element={<ReporteVenta />} />
               <Route
                 path="/ventas/tablero-reporte"
                 element={<TableroReporte />}

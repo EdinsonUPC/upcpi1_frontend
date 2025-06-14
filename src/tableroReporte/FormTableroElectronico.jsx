@@ -169,6 +169,26 @@ const FormTableroElectronico = () => {
         // TotalUnidades:,
         // TotalAmortizacion:TotalAmortizacion,
         // TotalSaldo:TotalSaldo,
+        ListaAmortizacion:
+          venta.montoAmortizacion &&
+          venta.idFormaPago &&
+          venta.fecha &&
+          venta.idTipoDocumento &&
+          venta.idBanco &&
+          venta.NumeroDocumento
+            ? [
+                {
+                  Monto: venta.montoAmortizacion,
+                  IdFormaPago: venta.idFormaPago,
+                  FechaPago: venta.fecha,
+                  IdTipoAmortizacion: venta.idTipoDocumento,
+                  Observacion: "",
+                  IdEstado: "REG",
+                  IdBanco: venta.idBanco,
+                  NumeroRecibo: venta.NumeroDocumento,
+                },
+              ]
+            : [],
       };
 
       const response = await repositoryVentasInstance.createVenta(updatedVenta);
@@ -477,11 +497,6 @@ const FormTableroElectronico = () => {
                   onChange={handleChangeDdown}
                   name="idTipoDocumento"
                   idParametro={8}
-                  defaultOption={{
-                    key: 0,
-                    text: "Seleccione Tipo de Pago",
-                    value: 0,
-                  }}
                 />
               </Box>
 

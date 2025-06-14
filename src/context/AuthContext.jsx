@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Error en el login:", error);
       return {
         auth: false,
-        message: "Error en el login:",
+        message: "Error en el login: Usuario o password incorrecto",
       };
     }
   };

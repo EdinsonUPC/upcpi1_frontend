@@ -1,5 +1,4 @@
 import {
-  Container,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -36,8 +35,6 @@ const FormEditSale = ({ sale }) => {
   const [venta, setVenta] = useState(dtoVenta());
 
   useEffect(() => {
-    console.log("sale.lineasVenta");
-    console.log(sale.lineasVenta);
     const lineasVentaTemporal = sale.lineasVenta?.map((linea) => ({
       ...linea,
       PesoBruto: linea.Peso_Bruto,
@@ -46,7 +43,6 @@ const FormEditSale = ({ sale }) => {
       CantidadJavas: linea.Cantidad_Javas,
       detalleTaraOpciones: JSON.parse(linea.detalleTaraOpciones),
     }));
-    console.log(lineasVentaTemporal);
     setVenta({
       IdVenta: sale.Id_Venta,
       Precio: sale.Precio,
@@ -78,8 +74,6 @@ const FormEditSale = ({ sale }) => {
       idFormaPago: sale.idFormaPago,
     });
   }, [sale]);
-  console.log("venta");
-  console.log(venta);
 
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -275,8 +269,8 @@ const FormEditSale = ({ sale }) => {
     pesadorRef.current?.setValue(x.IdPesador);
     productoRef.current?.setValue(x.idProducto);
     clienteRef.current?.setValue(x.idCliente);
-    tipoPagoRef.current?.reset(x.idTipoPago);
-    formaPagoRef.current?.reset(x.idFormaPago);
+    tipoPagoRef.current?.setValue(x.idTipoPago);
+    formaPagoRef.current?.setValue(x.idFormaPago);
   };
 
   const resetearRefs = () => {
@@ -286,7 +280,7 @@ const FormEditSale = ({ sale }) => {
     formaPagoRef.current?.reset();
   };
   return (
-    <Container>
+    <>
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="h6">
@@ -508,117 +502,7 @@ const FormEditSale = ({ sale }) => {
           </Stack>
         </AccordionDetails>
       </Accordion>
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="h6">Datos de Pago</Typography>
-        </AccordionSummary>
 
-        <AccordionDetails>
-          <Stack spacing={3}>
-            {/* Fila: Tipo y Forma de Pago */}
-            <Stack
-              direction={{ xs: "column", md: "row" }}
-              spacing={2}
-              alignItems="center"
-            >
-              <Box sx={{ flex: 1 }}>
-                <Typography>Tipo de Pago:</Typography>
-              </Box>
-              <Box sx={{ flex: 2 }}>
-                <DdownSearchParametro
-                  ref={tipoPagoRef}
-                  selectedValue={venta.idTipoDocumento}
-                  onChange={handleChangeDdown}
-                  name="idTipoDocumento"
-                  idParametro={8}
-                  defaultOption={{
-                    key: 0,
-                    text: "Seleccione Tipo de Pago",
-                    value: 0,
-                  }}
-                />
-              </Box>
-
-              <Box sx={{ flex: 1 }}>
-                <Typography>Forma de Pago:</Typography>
-              </Box>
-              <Box sx={{ flex: 2 }}>
-                <DdownSearchParametro
-                  ref={formaPagoRef}
-                  selectedValue={venta.idFormaPago}
-                  onChange={handleChangeDdown}
-                  name="idFormaPago"
-                  idParametro={7}
-                  notInit={true}
-                  filtroParametroDetallePadre={venta.idTipoDocumento}
-                />
-              </Box>
-            </Stack>
-
-            {/* Fila: Banco y Número de Operación (solo para ciertos métodos) */}
-            {["DEP", "DET", "CHQ"].includes(venta.idFormaPago) && (
-              <Stack
-                direction={{ xs: "column", md: "row" }}
-                spacing={2}
-                alignItems="center"
-              >
-                <Box sx={{ flex: 1 }}>
-                  <Typography>Banco:</Typography>
-                </Box>
-                <Box sx={{ flex: 2 }}>
-                  <DdownSearchParametro
-                    selectedValue={venta.idBanco}
-                    onChange={handleChangeDdown}
-                    name="idBanco"
-                    idParametro={11}
-                  />
-                </Box>
-
-                <Box sx={{ flex: 1 }}>
-                  <Typography>Nro Operación:</Typography>
-                </Box>
-                <Box sx={{ flex: 2 }}>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    placeholder="Ingrese el nro operación"
-                    value={venta.NumeroDocumento}
-                    onChange={(e) =>
-                      setVenta({ ...venta, NumeroDocumento: e.target.value })
-                    }
-                  />
-                </Box>
-              </Stack>
-            )}
-
-            {/* Fila: Monto Amortización */}
-            <Stack
-              direction={{ xs: "column", md: "row" }}
-              spacing={2}
-              alignItems="center"
-            >
-              <Box sx={{ flex: 1 }}>
-                <Typography>Monto Amortización:</Typography>
-              </Box>
-              <Box sx={{ flex: 2 }}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  type="number"
-                  value={venta.montoAmortizacion}
-                  onChange={(e) => {
-                    const v = parseFloat(e.target.value) || 0;
-                    setVenta({
-                      ...venta,
-                      montoAmortizacion: parseFloat(v.toFixed(2)),
-                    });
-                  }}
-                />
-              </Box>
-            </Stack>
-          </Stack>
-        </AccordionDetails>
-      </Accordion>
       {message && (
         <Stack spacing={2} sx={{ mt: 2 }}>
           <Alert
@@ -637,7 +521,7 @@ const FormEditSale = ({ sale }) => {
           Limpiar
         </Button> */}
       </Stack>
-    </Container>
+    </>
   );
 };
 

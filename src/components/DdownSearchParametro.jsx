@@ -5,14 +5,12 @@ import repositoryParametroInstance from "../repositorys/parametrosRepository";
 const DdownSearchParametro = forwardRef(
   (
     {
-      selectedValue,
-      defaultValue = null,
       onChange,
       placeholder = "Seleccione...",
       name,
       idParametro,
       filtroParametroDetallePadre = null,
-      defaultOption = null,
+      // defaultOption = null,
     },
     ref
   ) => {
@@ -24,7 +22,11 @@ const DdownSearchParametro = forwardRef(
     useImperativeHandle(ref, () => ({
       reset: () => setValue(null),
       getValue: () => value,
-      setValue: (x) => setValue(x),
+      setOption: (x) => {
+        console.log("xxxxxxxxxxxxxxxxxxxxxx");
+        console.log(x);
+        setValue(options.find((option) => option.value === x));
+      },
       reloadOptions: async () => {
         setLoading(true);
         try {
@@ -37,7 +39,7 @@ const DdownSearchParametro = forwardRef(
               label: p.Texto,
               value: p.Valor,
             }));
-          if (defaultOption) opts.unshift(defaultOption);
+          // if (defaultOption) opts.unshift(defaultOption);
           setOptions(opts);
         } catch (err) {
           console.error("Error reloading parametros:", err);
@@ -47,6 +49,8 @@ const DdownSearchParametro = forwardRef(
       },
     }));
 
+    console.log("options!!!!!!");
+    console.log(options);
     // Load all parameters once
     useEffect(() => {
       (async () => {
@@ -62,7 +66,7 @@ const DdownSearchParametro = forwardRef(
               label: p.Texto,
               value: p.Valor,
             }));
-          if (defaultOption) opts.unshift(defaultOption);
+          // if (defaultOption) opts.unshift(defaultOption);
           setOptions(opts);
         } catch (err) {
           console.error("Error loading parametros:", err);
@@ -70,7 +74,8 @@ const DdownSearchParametro = forwardRef(
           setLoading(false);
         }
       })();
-    }, [idParametro, defaultOption]);
+      // }, [idParametro, defaultOption]);
+    }, [idParametro]);
 
     // Re-filter when filtroParametroDetallePadre changes
     useEffect(() => {
@@ -82,16 +87,10 @@ const DdownSearchParametro = forwardRef(
         .filter((p) => p.Id_Parametro === idParametro)
         .filter((p) => p.IdParametroDetallePadre === parent?.Id_Item)
         .map((p) => ({ key: p.Id_Item, label: p.Texto, value: p.Valor }));
-      if (defaultOption) opts.unshift(defaultOption);
+      // if (defaultOption) opts.unshift(defaultOption);
       setOptions(opts);
-    }, [filtroParametroDetallePadre, allParams, idParametro, defaultOption]);
-
-    // Sync selectedValue → value object
-    useEffect(() => {
-      if (defaultValue === null) return;
-      const match = options.find((opt) => opt.value === defaultValue) || null;
-      setValue(match);
-    }, [defaultValue, options]);
+      // }, [filtroParametroDetallePadre, allParams, idParametro, defaultOption]);
+    }, [filtroParametroDetallePadre, allParams, idParametro]);
 
     return (
       <Autocomplete

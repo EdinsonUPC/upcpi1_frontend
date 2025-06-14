@@ -24,6 +24,18 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!username) {
+      setError("Credenciales inválidas: Usuario");
+      return;
+    }
+    if (!password) {
+      setError("Credenciales inválidas: Contraseña");
+      return;
+    }
+    if (!company) {
+      setError("Credenciales inválidas: Empresa");
+      return;
+    }
     // Aquí puedes llamar a tu API de autenticación
     const { auth, message } = await login(username, password, company);
     if (auth) {

@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import EnhancedTable from "../products/EnhancedTable";
 import moment from "moment";
 import axios from "axios";
-import { Container } from "@mui/material";
+import { Container, Stack } from "@mui/material";
+import Header from "../components/Header";
 moment().format();
 moment().locale("es");
 
@@ -41,23 +42,40 @@ export default function Products() {
   }, []);
 
   return (
-    <Container>
-      {/* cards */}
-      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Productos
-      </Typography>
-      {/* <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Details
-      </Typography> */}
-      <Grid container spacing={2} columns={12}>
-        <Grid size={{ xs: 12, md: 12, lg: 12 }}>
-          <EnhancedTable data={products} />
+    <>
+      <Stack
+        spacing={2}
+        sx={{
+          alignItems: "center",
+          mx: 3,
+          pb: 5,
+          mt: { xs: 8, md: 0 },
+        }}
+      >
+        <Header nav={["Productos", "Listado"]} />
+        {/* cards */}
+        <Grid
+          container
+          spacing={2}
+          columns={12}
+          sx={{
+            mb: (theme) => theme.spacing(2),
+            width: "100%",
+            maxWidth: { sm: "100%", md: "1700px" },
+          }}
+        >
+          <Typography component="h2" variant="h5" sx={{ mb: 2 }}>
+            Productos
+          </Typography>
+          <Grid columns={12} size={{ xs: 12, md: 12 }}>
+            <Grid size={{ xs: 12, md: 12, lg: 12 }}>
+              <EnhancedTable data={products} />
+            </Grid>
+          </Grid>
         </Grid>
-        {/* <Grid size={{ xs: 12, md: 12, lg: 12 }}>
-          <CustomizedDataGrid />
-        </Grid> */}
-      </Grid>
-      <Copyright sx={{ my: 4 }} />
-    </Container>
+        {/* <Copyright sx={{ my: 4 }} /> */}
+      </Stack>
+      {/* </Container> */}
+    </>
   );
 }

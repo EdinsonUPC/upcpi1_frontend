@@ -13,7 +13,7 @@ import ScaleIcon from "@mui/icons-material/Scale";
 
 const DetalleTaraEdit = ({ onApply, detalleTaraOpciones = [] }) => {
   const [taraOptions, setTaraOptions] = useState(
-    detalleTaraOpciones.length
+    detalleTaraOpciones?.length
       ? detalleTaraOpciones
       : [{ tipoTara: 6.8, cantidad: 1, tara: 6.8 }]
   );

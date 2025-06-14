@@ -4,7 +4,6 @@ import {
   Button,
   Checkbox,
   CircularProgress,
-  Container,
   IconButton,
   Stack,
 } from "@mui/material";
@@ -12,22 +11,14 @@ import { DataGrid } from "@mui/x-data-grid";
 import { FaEdit, FaMoneyBill, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import moment from "moment";
-import FilterButtonsMUI from "../mantenimientoVenta/FilterButtonsMUI";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import FilterButtonsReport from "../reporteVenta/FilterButtonsReport";
 
-const VentasListadoMUI = () => {
+const ReporteVenta = () => {
   const [filterData, setFilterData] = useState({
     datFechaInicial: moment().format("YYYY-MM-DD"),
     datFechaFinal: moment().format("YYYY-MM-DD"),
-    varIdProductos: [],
-    varIdClientes: [],
-    numMontoInicial: 0,
-    numMontoFinal: 0,
-    numSaldoInicial: 0,
-    numSaldoFinal: 0,
-    varSearchText: "",
-    varEstados: [],
   });
 
   const [resultData, setResultData] = useState([]);
@@ -84,18 +75,103 @@ const VentasListadoMUI = () => {
     // setSelectedVenta(sale);
   };
 
+  const descargarPDF = async (dto) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/ventas/export/pdf`,
+        {
+          ...dto,
+        },
+        {
+          responseType: "blob", // 👈 importante
+          headers: {
+            "Content-Type": "application/json",
+            // 'Authorization': 'Bearer TU_TOKEN', si aplica
+          },
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "reporte.pdf");
+      document.body.appendChild(link);
+      link.click();
+
+      // Limpieza
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error al descargar el PDF:", error);
+    }
+  };
+
+  const descargarExcel = async (dto) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/ventas/export/excel`,
+        {
+          ...dto,
+        },
+        {
+          responseType: "blob", // 👈 importante
+          headers: {
+            "Content-Type": "application/json",
+            // 'Authorization': 'Bearer TU_TOKEN', si aplica
+          },
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "reporte.xlsx");
+      document.body.appendChild(link);
+      link.click();
+
+      // Limpieza
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error al descargar el PDF:", error);
+    }
+  };
+
+  const handleReport = async (pdf) => {
+    try {
+      const amortizacionDto = {
+        fechaInicio: filterData.datFechaInicial,
+        fechaFin: filterData.datFechaFinal,
+      };
+
+      const response = (await pdf)
+        ? descargarPDF(amortizacionDto)
+        : descargarExcel(amortizacionDto);
+
+      if (response.success) {
+        //aaa
+      } else {
+        throw new Error(
+          response.message || "Error desconocido al procesar la venta"
+        );
+      }
+    } catch (error) {
+      console.error("Error en handleAccept:", error);
+    }
+  };
+
   const columns = [
-    {
-      field: "select",
-      headerName: "",
-      width: 50,
-      renderCell: (params) => (
-        <Checkbox
-          checked={selectedData.includes(params.row.Id_Venta)}
-          onChange={() => handleSelect(params.row.Id_Venta)}
-        />
-      ),
-    },
+    // {
+    //   field: "select",
+    //   headerName: "",
+    //   width: 50,
+    //   renderCell: (params) => (
+    //     <Checkbox
+    //       checked={selectedData.includes(params.row.Id_Venta)}
+    //       onChange={() => handleSelect(params.row.Id_Venta)}
+    //     />
+    //   ),
+    // },
     { field: "Id_Venta", headerName: "ID", width: 90 },
     {
       field: "Fecha",
@@ -158,7 +234,7 @@ const VentasListadoMUI = () => {
         }}
         spacing={2}
       >
-        <Header nav={["Ventas", "Listado"]} />
+        <Header nav={["Reportes", "Ventas por producto"]} />
         <Stack
           spacing={2}
           direction="row"
@@ -166,14 +242,25 @@ const VentasListadoMUI = () => {
           alignItems="center"
           sx={{ mb: 2 }}
         >
-          <FilterButtonsMUI
+          <FilterButtonsReport
             filterData={filterData}
             setFilterData={setFilterData}
             handleApplyFilters={handleSearch}
-          ></FilterButtonsMUI>
-          <Button variant="contained" onClick={handleSearch}>
-            Buscar
-          </Button>
+          ></FilterButtonsReport>
+          <Stack
+            spacing={2}
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{ mb: 2 }}
+          >
+            <Button variant="contained" onClick={() => handleReport(true)}>
+              Generar Pdf
+            </Button>
+            <Button variant="contained" onClick={() => handleReport(false)}>
+              Generar Excel
+            </Button>
+          </Stack>
         </Stack>
         {loading ? (
           <Box display="flex" justifyContent="center" mt={4}>
@@ -196,4 +283,4 @@ const VentasListadoMUI = () => {
   );
 };
 
-export default VentasListadoMUI;
+export default ReporteVenta;
