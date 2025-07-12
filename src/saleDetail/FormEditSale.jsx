@@ -515,7 +515,7 @@ const FormEditSale = ({ sale }) => {
       )}
       <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
         <Button variant="contained" color="primary" onClick={handleAccept}>
-          Aceptar
+          Actualizar
         </Button>
         {/* <Button variant="outlined" color="secondary" onClick={handleReset}>
           Limpiar

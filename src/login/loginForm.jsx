@@ -87,7 +87,7 @@ const LoginForm = () => {
             </Alert>
           )}
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3 }}>
-            Entrar
+            Iniciar Sesión
           </Button>
         </Box>
       </Box>

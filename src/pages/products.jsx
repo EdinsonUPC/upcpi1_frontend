@@ -14,7 +14,7 @@ export default function Products() {
   const [products, setProducts] = useState([]);
   // const [predicciones, setPredicciones] = useState([]);
   const hoy = Date.now();
-  const momemtHoy = moment(hoy);
+  const momemtHoy = moment(hoy).add(1, "M");
 
   useEffect(() => {
     const apiFetch = async () => {

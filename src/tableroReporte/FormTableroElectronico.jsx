@@ -592,7 +592,7 @@ const FormTableroElectronico = () => {
       )}
       <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
         <Button variant="contained" color="primary" onClick={handleAccept}>
-          Aceptar
+          Guardar
         </Button>
         <Button variant="outlined" color="secondary" onClick={handleReset}>
           Limpiar
