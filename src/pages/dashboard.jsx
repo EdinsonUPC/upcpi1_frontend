@@ -116,9 +116,7 @@ export default function Dashboard() {
           </Grid>
         </Grid>
 
-        {/* <Copyright sx={{ my: 4 }} /> */}
       </Stack>
-      {/* </Container> */}
     </>
   );
 }

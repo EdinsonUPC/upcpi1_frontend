@@ -64,7 +64,7 @@ const headCells = [
   {
     id: "nombre",
     numeric: false,
-    disablePadding: true,
+    disablePadding: false,
     label: "Nombre",
   },
   {
@@ -115,7 +115,7 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
+        {/* <TableCell padding="checkbox">
           <Checkbox
             color="primary"
             indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -125,7 +125,7 @@ function EnhancedTableHead(props) {
               "aria-label": "select all desserts",
             }}
           />
-        </TableCell>
+        </TableCell> */}
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -337,7 +337,7 @@ export default function EnhancedTable({ data }) {
                     selected={isItemSelected}
                     sx={{ cursor: "pointer" }}
                   >
-                    <TableCell padding="checkbox">
+                    {/* <TableCell padding="checkbox">
                       <Checkbox
                         color="primary"
                         checked={isItemSelected}
@@ -345,12 +345,12 @@ export default function EnhancedTable({ data }) {
                           "aria-labelledby": labelId,
                         }}
                       />
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell
                       component="th"
                       id={labelId}
                       scope="row"
-                      padding="none"
+                      // padding="none"
                     >
                       {row.nombre}
                     </TableCell>
@@ -358,7 +358,7 @@ export default function EnhancedTable({ data }) {
                     <TableCell align="right">{row.precioCompra}</TableCell>
                     <TableCell align="right">{row.margen}</TableCell>
                     <TableCell align="right">{row.tipoProducto}</TableCell>
-                    <TableCell align="center">
+                    <TableCell align="right">
                       <b>{row.prediccion}</b>
                     </TableCell>
                   </TableRow>

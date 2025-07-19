@@ -59,8 +59,8 @@ function getDaysInMonth(month, year) {
 export default function DetailChart({ id_producto }) {
   const theme = useTheme();
   const hoy = Date.now();
-  const momemtHoy = moment(hoy).format("MM");
-  const [monthSelect, setMonthSelect] = useState(momemtHoy);
+  const momemtSelected = moment(hoy).add(1, "M").format("MM");
+  const [monthSelect, setMonthSelect] = useState(momemtSelected);
 
   const data = getDaysInMonth(
     parseInt(monthSelect),
@@ -81,8 +81,8 @@ export default function DetailChart({ id_producto }) {
   useEffect(() => {
     const apiFetch = async () => {
       const momemtHoyApi = moment(hoy)
-        .set("month", monthSelect - 1)
-        .set("date", 1);
+        .set("month", monthSelect - 2)
+        .endOf("month");
       const { data } = await axios.post(
         "http://localhost:8000/api/ventas/filterQuantityByProdByPeriod",
         {
@@ -91,24 +91,6 @@ export default function DetailChart({ id_producto }) {
         }
       );
 
-      // const mesActual = momemtHoyApi.format("MM");
-      // const arrayGrafico = [
-      //   mesActual - 3,
-      //   mesActual - 2,
-      //   mesActual - 1,
-      //   parseInt(mesActual),
-      // ];
-      // const nuevoArray = arrayGrafico.map((x) => {
-      //   return data.prediccion.find((registro) => registro.Month === x)
-      //     ? data.prediccion.find((registro) => registro.Month === x)
-      //     : {
-      //         Id_Product: id_producto,
-      //         Year: momemtHoyApi.format("YYYY"),
-      //         Month: x,
-      //         QuantitySold: 0,
-      //         TotalAmount: 0,
-      //       };
-      // });
       const { data: dataPrediccion } = await axios.post(
         "http://localhost:8000/api/ventas/predictionQuantityByProdByPeriod",
         {

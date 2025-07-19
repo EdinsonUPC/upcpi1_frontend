@@ -13,6 +13,7 @@ import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const mainListItems = [
   {
@@ -50,8 +51,10 @@ const secondaryListItems = [
 
 export default function MenuContent() {
   const navigate = useNavigate();
+  const [selectedItem, setSelectedItem] = useState(0);
 
-  const handleNavigate = (url) => {
+  const handleNavigate = (url, index) => {
+    setSelectedItem(index);
     navigate(url);
   };
 
@@ -61,8 +64,8 @@ export default function MenuContent() {
         {mainListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: "block" }}>
             <ListItemButton
-              selected={index === 0}
-              onClick={() => handleNavigate(item.navigate)}
+              selected={index === selectedItem}
+              onClick={() => handleNavigate(item.navigate, index)}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
